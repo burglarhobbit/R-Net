@@ -7,7 +7,7 @@ from main import train, test
 flags = tf.flags
 
 home = os.path.expanduser("~")
-train_fil = os.path.join(home, "snetP", "data", "squad", "train-v1.1.json")
+train_file = os.path.join(home, "snetP", "data", "squad", "train-v1.1.json")
 dev_file = os.path.join(home, "snetP", "data", "squad", "dev-v1.1.json")
 test_file = os.path.join(home, "snetP", "data", "squad", "dev-v1.1.json")
 glove_file = os.path.join(home, "snetP", "data", "glove", "glove.6B.300d.txt")
@@ -43,7 +43,7 @@ flags.DEFINE_string("mode", "train", "Running mode train/debug/test")
 flags.DEFINE_string("target_dir", target_dir, "Target directory for out data")
 flags.DEFINE_string("log_dir", log_dir, "Directory for tf event")
 flags.DEFINE_string("save_dir", save_dir, "Directory for saving model")
-flags.DEFINE_string("train_fil", train_fil, "Train source file")
+flags.DEFINE_string("train_file", train_file, "Train source file")
 flags.DEFINE_string("dev_file", dev_file, "Dev source file")
 flags.DEFINE_string("test_file", test_file, "Test source file")
 flags.DEFINE_string("glove_file", glove_file, "Glove source file")
