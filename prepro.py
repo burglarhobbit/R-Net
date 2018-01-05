@@ -28,6 +28,7 @@ def convert_idx(text, tokens):
 
 
 def process_file(filename, data_type, word_counter, char_counter):
+    print(filename)
     print("Generating {} examples...".format(data_type))
     examples = []
     eval_examples = {}
@@ -200,8 +201,9 @@ def save(filename, obj, message=None):
 
 def prepro(config):
     word_counter, char_counter = Counter(), Counter()
+    print(config.train_fil)
     train_examples, train_eval = process_file(
-        config.train_file, "train", word_counter, char_counter)
+        config.train_fil, "train", word_counter, char_counter)
     dev_examples, dev_eval = process_file(
         config.dev_file, "dev", word_counter, char_counter)
     test_examples, test_eval = process_file(
