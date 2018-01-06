@@ -7,14 +7,15 @@ from main import train, test
 flags = tf.flags
 
 home = os.path.expanduser("~")
-train_file = os.path.join(home, "snetP", "data", "squad", "train-v1.1.json")
-dev_file = os.path.join(home, "snetP", "data", "squad", "dev-v1.1.json")
-test_file = os.path.join(home, "snetP", "data", "squad", "dev-v1.1.json")
-glove_file = os.path.join(home, "data", "glove.840B.300d.txt")
-#glove_file = os.path.join(home, "data", "glove", "glove.6B.300d.txt")
+hdd2 = "/media/hdd2"
+train_file = os.path.join(hdd2, "snetP_data", "data", "squad", "train-v1.1.json")
+dev_file = os.path.join(hdd2, "snetP_data", "data", "squad", "dev-v1.1.json")
+test_file = os.path.join(hdd2, "snetP_data", "data", "squad", "dev-v1.1.json")
+glove_file = os.path.join(hdd2, "snetP_data", "data", "glove", "glove.840B.300d.txt")
 # glove_file = os.path.join(home, "data", "fasttext", "wiki-news-300d-1M.vec")
 
-target_dir = "snetP/data"
+#target_dir = "data"
+target_dir = os.path.join(hdd2, "snetP_data", "data")
 log_dir = "log/event"
 save_dir = "log/model"
 answer_dir = "log/answer"
