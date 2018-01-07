@@ -141,7 +141,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 	line_limit = 500
 	line_count = 0
 
-	for i in tqdm(range(line_limit)):
+	while(line):
 		source = json.loads(line)
 		answer = source['answers']
 		
@@ -195,6 +195,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 		eval_examples[str(total)] = {
 			"passage_concat": passage_concat, "spans": spans, "answers": answer_texts, "uuid": source["query_id"]}
 		line = fh.readline()
+
 	random.shuffle(examples)
 	print("{} questions in total".format(len(examples)))
 		
