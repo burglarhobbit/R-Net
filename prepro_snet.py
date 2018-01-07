@@ -162,7 +162,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 				"''", '" ').replace("``", '" ')
 		passage_tokens = word_tokenize(passage_concat)
 		passage_chars = [list(token) for token in passage_tokens]
-		spans = convert_idx(context, context_tokens)
+		spans = convert_idx(passage_concat, passage_tokens)
 
 		# word_counter increase for every qa pair. i.e. 1 since ms marco has 1 qa pair per para
 		for token in passage_tokens:
@@ -189,11 +189,11 @@ def process_file(filename, data_type, word_counter, char_counter):
 		y1, y2 = answer_span[0], answer_span[-1]
 		y1s.append(y1)
 		y2s.append(y2)
-		example = {"context_tokens": context_tokens, "context_chars": context_chars, "ques_tokens": ques_tokens,
+		example = {"passage_tokens": passage_tokens, "passage_chars": passage_chars, "ques_tokens": ques_tokens,
 				   "ques_chars": ques_chars, "y1s": y1s, "y2s": y2s, "id": total}
 		examples.append(example)
 		eval_examples[str(total)] = {
-			"context": context, "spans": spans, "answers": answer_texts, "uuid": qa["id"]}
+			"passage_concat": passage_concat, "spans": spans, "answers": answer_texts, "uuid": qa["id"]}
 		random.shuffle(examples)
 		print("{} questions in total".format(len(examples)))
 		line = fh.readline()
@@ -291,7 +291,7 @@ def build_features(config, examples, data_type, out_file, word2idx_dict, char2id
 	char_limit = config.char_limit
 
 	def filter_func(example, is_test=False):
-		return len(example["context_tokens"]) > para_limit or len(example["ques_tokens"]) > ques_limit
+		return len(example["passage_tokens"]) > para_limit or len(example["ques_tokens"]) > ques_limit
 
 	print("Processing {} examples...".format(data_type))
 	writer = tf.python_io.TFRecordWriter(out_file)
@@ -305,8 +305,8 @@ def build_features(config, examples, data_type, out_file, word2idx_dict, char2id
 			continue
 
 		total += 1
-		context_idxs = np.zeros([para_limit], dtype=np.int32)
-		context_char_idxs = np.zeros([para_limit, char_limit], dtype=np.int32)
+		passage_idxs = np.zeros([para_limit], dtype=np.int32)
+		passage_char_idxs = np.zeros([para_limit, char_limit], dtype=np.int32)
 		ques_idxs = np.zeros([ques_limit], dtype=np.int32)
 		ques_char_idxs = np.zeros([ques_limit, char_limit], dtype=np.int32)
 		y1 = np.zeros([para_limit], dtype=np.float32)
@@ -323,17 +323,17 @@ def build_features(config, examples, data_type, out_file, word2idx_dict, char2id
 				return char2idx_dict[char]
 			return 1
 
-		for i, token in enumerate(example["context_tokens"]):
-			context_idxs[i] = _get_word(token)
+		for i, token in enumerate(example["passage_tokens"]):
+			passage_idxs[i] = _get_word(token)
 
 		for i, token in enumerate(example["ques_tokens"]):
 			ques_idxs[i] = _get_word(token)
 
-		for i, token in enumerate(example["context_chars"]):
+		for i, token in enumerate(example["passage_chars"]):
 			for j, char in enumerate(token):
 				if j == char_limit:
 					break
-				context_char_idxs[i, j] = _get_char(char)
+				passage_char_idxs[i, j] = _get_char(char)
 
 		for i, token in enumerate(example["ques_chars"]):
 			for j, char in enumerate(token):
@@ -345,9 +345,9 @@ def build_features(config, examples, data_type, out_file, word2idx_dict, char2id
 		y1[start], y2[end] = 1.0, 1.0
 
 		record = tf.train.Example(features=tf.train.Features(feature={
-								  "context_idxs": tf.train.Feature(bytes_list=tf.train.BytesList(value=[context_idxs.tostring()])),
+								  "passage_idxs": tf.train.Feature(bytes_list=tf.train.BytesList(value=[passage_idxs.tostring()])),
 								  "ques_idxs": tf.train.Feature(bytes_list=tf.train.BytesList(value=[ques_idxs.tostring()])),
-								  "context_char_idxs": tf.train.Feature(bytes_list=tf.train.BytesList(value=[context_char_idxs.tostring()])),
+								  "passage_char_idxs": tf.train.Feature(bytes_list=tf.train.BytesList(value=[passage_char_idxs.tostring()])),
 								  "ques_char_idxs": tf.train.Feature(bytes_list=tf.train.BytesList(value=[ques_char_idxs.tostring()])),
 								  "y1": tf.train.Feature(bytes_list=tf.train.BytesList(value=[y1.tostring()])),
 								  "y2": tf.train.Feature(bytes_list=tf.train.BytesList(value=[y2.tostring()])),
