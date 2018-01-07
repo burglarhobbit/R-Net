@@ -51,6 +51,7 @@ def train(config):
         sess.run(tf.assign(model.lr, tf.constant(lr, dtype=tf.float32)))
 
         for _ in tqdm(range(1, config.num_steps + 1)):
+            print("Started training")
             global_step = sess.run(model.global_step) + 1
             loss, train_op = sess.run([model.loss, model.train_op], feed_dict={
                                       handle: train_handle})
