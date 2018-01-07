@@ -9,10 +9,15 @@ flags = tf.flags
 home = os.path.expanduser("~")
 hdd2 = "/media/hdd2"
 
-train_file = os.path.join(home, "snetP_data", "data", "msmarco", "train_v1.1.json")
-dev_file = os.path.join(home, "snetP_data", "data", "msmarco", "dev_v1.1.json")
-test_file = os.path.join(home, "snetP_data", "data", "msmarco", "test_public_v1.1.json")
-glove_file = os.path.join(home, "snetP_data", "data", "glove", "glove.840B.300d.txt")
+if os.path.isdir(hdd2):
+    path = hdd2
+else:
+    path = home
+
+train_file = os.path.join(path, "snetP_data", "data", "msmarco", "train_v1.1.json")
+dev_file = os.path.join(path, "snetP_data", "data", "msmarco", "dev_v1.1.json")
+test_file = os.path.join(path, "snetP_data", "data", "msmarco", "dev_v.1.json")
+glove_file = os.path.join(path, "snetP_data", "data", "glove", "glove.840B.300d.txt")
 
 #train_file = os.path.join(hdd2, "snetP_data", "data", "msmarco", "train_v1.1.json")
 #dev_file = os.path.join(hdd2, "snetP_data", "data", "msmarco", "dev_v1.1.json")
@@ -21,7 +26,7 @@ glove_file = os.path.join(home, "snetP_data", "data", "glove", "glove.840B.300d.
 #target_dir = os.path.join(hdd2, "snetP_data", "snet_data")
 
 #target_dir = "data"
-target_dir = os.path.join(home, "snetP_data", "snet_data")
+target_dir = os.path.join(path, "snetP_data", "snet_data")
 log_dir = "log/event"
 save_dir = "log/model"
 answer_dir = "log/answer"
