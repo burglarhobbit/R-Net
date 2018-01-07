@@ -138,10 +138,10 @@ def process_file(filename, data_type, word_counter, char_counter):
 
 	fh = open(filename, "r")
 	line = fh.readline()
-	line_limit = 500
+	line_limit = 100
 	line_count = 0
 
-	for i in tqdm(range(500)):
+	for i in tqdm(range(line_limit)):
 		source = json.loads(line)
 		answer = source['answers']
 		
@@ -372,24 +372,24 @@ def prepro(config):
 	word_counter, char_counter = Counter(), Counter()
 	train_examples, train_eval = process_file(
 		config.train_file, "train", word_counter, char_counter)
-	"""dev_examples, dev_eval = process_file(
+	dev_examples, dev_eval = process_file(
 		config.dev_file, "dev", word_counter, char_counter)
 	test_examples, test_eval = process_file(
-		config.test_file, "test", word_counter, char_counter)"""
+		config.test_file, "test", word_counter, char_counter)
 	word_emb_mat, word2idx_dict = get_embedding(
 		word_counter, "word", emb_file=config.glove_file, size=config.glove_size, vec_size=config.glove_dim)
 	char_emb_mat, char2idx_dict = get_embedding(
 		char_counter, "char", vec_size=config.char_dim)
 	build_features(config, train_examples, "train",
 				   config.train_record_file, word2idx_dict, char2idx_dict)
-	"""dev_meta = build_features(config, dev_examples, "dev",
+	dev_meta = build_features(config, dev_examples, "dev",
 							  config.dev_record_file, word2idx_dict, char2idx_dict)
 	test_meta = build_features(config, test_examples, "test",
-							   config.test_record_file, word2idx_dict, char2idx_dict, is_test=True)"""
+							   config.test_record_file, word2idx_dict, char2idx_dict, is_test=True)
 	save(config.word_emb_file, word_emb_mat, message="word embedding")
 	save(config.char_emb_file, char_emb_mat, message="char embedding")
 	save(config.train_eval_file, train_eval, message="train eval")
-	"""save(config.dev_eval_file, dev_eval, message="dev eval")
+	save(config.dev_eval_file, dev_eval, message="dev eval")
 	save(config.test_eval_file, test_eval, message="test eval")
 	save(config.dev_meta, dev_meta, message="dev meta")
-	save(config.test_meta, test_meta, message="test meta")"""
+	save(config.test_meta, test_meta, message="test meta")
