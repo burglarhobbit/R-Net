@@ -143,7 +143,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 
 	while(line and line_count<line_limit):
 		source = json.loads(line)
-		answer = json_line['answers']
+		answer = source['answers']
 		
 		if answer == []:
 			line = fh.readline()
@@ -157,7 +157,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 			answer_text = answer[0].strip()
 		passage_concat = ''
 		#for pi, p in enumerate(article["paragraphs"]):
-		for passage in json_line['passages']:
+		for passage in source['passages']:
 			passage_concat += passage['passage_text'].replace(
 				"''", '" ').replace("``", '" ')
 		passage_tokens = word_tokenize(passage_concat)
@@ -169,7 +169,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 			word_counter[token] += 1
 			for char in token:
 				char_counter[char] += 1
-		ques = json_line['query'].replace(
+		ques = source['query'].replace(
 			"''", '" ').replace("``", '" ')
 		ques_tokens = word_tokenize(ques)
 		ques_chars = [list(token) for token in ques_tokens]
