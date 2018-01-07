@@ -138,7 +138,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 
 	fh = open(filename, "r")
 	line = fh.readline()
-	line_limit = 100
+	line_limit = 500
 	line_count = 0
 
 	for i in tqdm(range(line_limit)):
