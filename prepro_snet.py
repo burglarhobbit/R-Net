@@ -194,9 +194,10 @@ def process_file(filename, data_type, word_counter, char_counter):
 		examples.append(example)
 		eval_examples[str(total)] = {
 			"passage_concat": passage_concat, "spans": spans, "answers": answer_texts, "uuid": source["query_id"]}
-		random.shuffle(examples)
-		print("{} questions in total".format(len(examples)))
 		line = fh.readline()
+	random.shuffle(examples)
+	print("{} questions in total".format(len(examples)))
+		
 	"""
 	# original implementation for comparision purposes
 	with open(filename, "r") as fh:
