@@ -10,7 +10,7 @@ home = os.path.expanduser("~")
 hdd2 = "/media/hdd2"
 train_file = os.path.join(hdd2, "snetP_data", "data", "msmarco", "train_v1.1.json")
 dev_file = os.path.join(hdd2, "snetP_data", "data", "msmarco", "dev_v1.1.json")
-test_file = os.path.join(hdd2, "snetP_data", "data", "msmarco", "test_public_v1.1.json")
+test_file = os.path.join(hdd2, "snetP_data", "data", "msmarco", "dev_v1.1.json")
 glove_file = os.path.join(hdd2, "snetP_data", "data", "glove", "glove.840B.300d.txt")
 # glove_file = os.path.join(home, "data", "fasttext", "wiki-news-300d-1M.vec")
 
