@@ -142,7 +142,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 	line_count = 0
 
 	while(line and line_count<line_limit):
-		source = json.load(line)
+		source = json.loads(line)
 		answer = json_line['answers']
 		
 		if answer == []:
@@ -196,7 +196,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 			"context": context, "spans": spans, "answers": answer_texts, "uuid": qa["id"]}
 		random.shuffle(examples)
 		print("{} questions in total".format(len(examples)))
-
+		line = fh.readline()
 	"""
 	# original implementation for comparision purposes
 	with open(filename, "r") as fh:
