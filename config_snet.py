@@ -97,7 +97,7 @@ flags.DEFINE_integer("capacity", 15000, "Batch size of dataset shuffle")
 flags.DEFINE_integer("num_threads", 4, "Number of threads in input pipeline")
 flags.DEFINE_boolean(
     "use_cudnn", False, "Whether to use cudnn rnn (should be False for CPU)")
-flags.DEFINE_boolean("is_bucket", True, "build bucket batch iterator or not")
+flags.DEFINE_boolean("is_bucket", False, "build bucket batch iterator or not")
 flags.DEFINE_integer("bucket_range", [40, 401, 40], "the range of bucket")
 
 flags.DEFINE_integer("batch_size", 64, "Batch size")
