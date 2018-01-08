@@ -72,8 +72,14 @@ def convert_tokens(eval_file, qa_id, pp1, pp2):
         passage_concat = eval_file[str(qid)]["passage_concat"]
         spans = eval_file[str(qid)]["spans"]
         uuid = eval_file[str(qid)]["uuid"]
-        start_idx = spans[p1][0]
-        end_idx = spans[p2][1]
+        try:
+            start_idx = spans[p1][0]
+            end_idx = spans[p2][1]
+        except:
+            print(passage_concat)
+            print(spans)
+            print(uuid)
+            print(p1,p2)
         answer_dict[str(qid)] = passage_concat[start_idx: end_idx]
         remapped_dict[uuid] = passage_concat[start_idx: end_idx]
     return answer_dict, remapped_dict
