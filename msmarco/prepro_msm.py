@@ -198,11 +198,12 @@ def process_file(filename, data_type, word_counter, char_counter):
 			if not (answer_end <= span[0] or answer_start >= span[1]):
 				answer_span.append(idx)
 			else:
-				print(span, answer_start, answer_end)
+				print(span)
 		try:
 			y1, y2 = answer_span[0], answer_span[-1]
 		except Exception as e:
-			print(answer_span)
+			print(answer_span,answer_start,answer_end)
+			print answer_text
 			break
 		y1s.append(y1)
 		y2s.append(y2)
