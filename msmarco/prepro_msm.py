@@ -147,6 +147,10 @@ def process_file(filename, data_type, word_counter, char_counter):
 		total_lines = 10047 # ms marco dev data set lines (for test, we use dev data set)
 	line_count = 0
 
+	skip = 1330
+	for _ in range(skip):
+		next(fh)
+
 	#while(line):
 	for i in tqdm(range(total_lines)):
 		source = json.loads(line)
