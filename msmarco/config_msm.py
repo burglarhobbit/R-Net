@@ -1,7 +1,7 @@
 import os
 import tensorflow as tf
 
-from prepro_snet import prepro
+from prepro_msm import prepro
 from main import train, test
 
 flags = tf.flags
