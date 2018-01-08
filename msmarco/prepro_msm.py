@@ -194,7 +194,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 
 		# word index for answer span
 		for idx, span in enumerate(spans):
-			if not (answer_end <= span[0] or answer_start >= span[1]):
+			if not (answer_end <= span[0] or answer_start >= span[-1]):
 				answer_span.append(idx)
 		try:
 			y1, y2 = answer_span[0], answer_span[-1]
