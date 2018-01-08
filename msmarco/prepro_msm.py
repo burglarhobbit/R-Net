@@ -203,6 +203,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 			y1, y2 = answer_span[0], answer_span[-1]
 		except Exception as e:
 			print(answer_span,answer_start,answer_end)
+			print(passage_concat)
 			print(answer_text)
 			break
 		y1s.append(y1)
