@@ -68,6 +68,7 @@ def get_dataset(record_file, parser, config):
 def convert_tokens(eval_file, qa_id, pp1, pp2):
 	answer_dict = {}
 	remapped_dict = {}
+	outlier = False
 	for qid, p1, p2 in zip(qa_id, pp1, pp2):
 		passage_concat = eval_file[str(qid)]["passage_concat"]
 		spans = eval_file[str(qid)]["spans"]
@@ -92,7 +93,7 @@ def convert_tokens(eval_file, qa_id, pp1, pp2):
 		"""
 		answer_dict[str(qid)] = passage_concat[start_idx: end_idx]
 		remapped_dict[uuid] = passage_concat[start_idx: end_idx]
-	return answer_dict, remapped_dict
+	return answer_dict, remapped_dict, outlier
 
 
 def evaluate(eval_file, answer_dict):
