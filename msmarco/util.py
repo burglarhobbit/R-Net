@@ -78,8 +78,12 @@ def convert_tokens(eval_file, qa_id, pp1, pp2):
         except:
             print(passage_concat)
             print(spans)
+            print(len(spans))
             print(uuid)
             print(p1,p2)
+            import sys
+            sys.exit()
+
         answer_dict[str(qid)] = passage_concat[start_idx: end_idx]
         remapped_dict[uuid] = passage_concat[start_idx: end_idx]
     return answer_dict, remapped_dict
