@@ -195,7 +195,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 		try:
 			y1, y2 = answer_span[0], answer_span[-1]
 		except Exception as e:
-			print answer_span
+			print(answer_span)
 		y1s.append(y1)
 		y2s.append(y2)
 		example = {"passage_tokens": passage_tokens, "passage_chars": passage_chars, "ques_tokens": ques_tokens,
