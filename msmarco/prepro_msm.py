@@ -189,7 +189,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 				char_counter[char] += 1
 		y1s, y2s = [], []
 		answer_texts = [answer_text]
-		answer_start, answer_end = lcs(passage_concat,answer_text)
+		answer_start, answer_end = lcs(passage_concat.lower(),answer_text.lower())
 		answer_span = []
 
 		# word index for answer span
@@ -197,8 +197,6 @@ def process_file(filename, data_type, word_counter, char_counter):
 			#if not (answer_end <= span[0] or answer_start >= span[1]):
 			if not (answer_end <= span[0] or answer_start >= span[1]):
 				answer_span.append(idx)
-			else:
-				print(span)
 		try:
 			y1, y2 = answer_span[0], answer_span[-1]
 		except Exception as e:
