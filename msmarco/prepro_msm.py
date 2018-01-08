@@ -93,9 +93,9 @@ def _lcs(X, Y, m, n):
 		else:
 			j-=1
 	#print "LCS of " + X + " and " + Y + " is " + "".join(lcs)
-	if answer_start == answer_end:
-		answer_end += 1
-	return answer_start,answer_end
+	#if answer_start == answer_end:
+	#	answer_end += 1
+	return answer_start,answer_end+1
 """
 def _lcs(X, Y, m, n):
 	L = [[0 for x in range(n+1)] for x in range(m+1)]
