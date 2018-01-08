@@ -15,7 +15,7 @@ glove_file = os.path.join(hdd2, "snetP_data", "data", "glove", "glove.840B.300d.
 # glove_file = os.path.join(home, "data", "fasttext", "wiki-news-300d-1M.vec")
 
 #target_dir = "data"
-target_dir = os.path.join(hdd2, "snetP_data", "data")
+target_dir = os.path.join(hdd2, "snetP_data", "rnet", "squad")
 log_dir = "log/event"
 save_dir = "log/model"
 answer_dir = "log/answer"

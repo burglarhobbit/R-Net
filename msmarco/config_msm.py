@@ -26,7 +26,7 @@ glove_file = os.path.join(path, "snetP_data", "data", "glove", "glove.840B.300d.
 #target_dir = os.path.join(hdd2, "snetP_data", "snet_data")
 
 #target_dir = "data"
-target_dir = os.path.join(path, "snetP_data", "snet_data")
+target_dir = os.path.join(path, "snetP_data", "rnet", "msmarco")
 log_dir = "log/event"
 save_dir = "log/model"
 answer_dir = "log/answer"
@@ -131,7 +131,7 @@ def main(_):
         train(config)
     elif config.mode == "test":
         if config.use_cudnn:
-            print("Warning: Due to a known bug in Tensorlfow, the parameters of CudnnGRU may not be properly restored.")
+            print("Warning: Due to a known bug in Tensorflow, the parameters of CudnnGRU may not be properly restored.")
         test(config)
     else:
         print("Unknown mode")

@@ -141,7 +141,8 @@ def process_file(filename, data_type, word_counter, char_counter):
 	line_limit = 500
 	line_count = 0
 
-	while(line):
+	#while(line):
+	for i in tqdm(range(line_limit)):
 		source = json.loads(line)
 		answer = source['answers']
 		
