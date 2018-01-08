@@ -139,14 +139,18 @@ def process_file(filename, data_type, word_counter, char_counter):
 	fh = open(filename, "r")
 	line = fh.readline()
 	line_limit = 500
-	total_lines = 82326 # ms marco lines
+	if data_type == "train":
+		total_lines = 82326 # ms marco training data set lines
+	elif data_type == "dev":
+		total_lines = 10047 # ms marco dev data set lines
+	elif data_type == "test":
+		total_lines = 10047 # ms marco dev data set lines (for test, we use dev data set)
 	line_count = 0
 
 	#while(line):
 	for i in tqdm(range(total_lines)):
 		source = json.loads(line)
 		answer = source['answers']
-		
 		if answer == []:
 			line = fh.readline()
 			continue
