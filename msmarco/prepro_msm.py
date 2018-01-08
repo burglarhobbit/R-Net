@@ -139,10 +139,11 @@ def process_file(filename, data_type, word_counter, char_counter):
 	fh = open(filename, "r")
 	line = fh.readline()
 	line_limit = 500
+	total_lines = 82326 # ms marco lines
 	line_count = 0
 
 	#while(line):
-	for i in tqdm(range(line_limit)):
+	for i in tqdm(range(total_lines)):
 		source = json.loads(line)
 		answer = source['answers']
 		
@@ -193,6 +194,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 		example = {"passage_tokens": passage_tokens, "passage_chars": passage_chars, "ques_tokens": ques_tokens,
 				   "ques_chars": ques_chars, "y1s": y1s, "y2s": y2s, "id": total}
 		examples.append(example)
+		total += 1
 		eval_examples[str(total)] = {
 			"passage_concat": passage_concat, "spans": spans, "answers": answer_texts, "uuid": source["query_id"]}
 		line = fh.readline()
