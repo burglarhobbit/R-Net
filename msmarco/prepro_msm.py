@@ -147,7 +147,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 		total_lines = 10047 # ms marco dev data set lines (for test, we use dev data set)
 	line_count = 0
 
-	skip = 1330
+	skip = 1330+789
 	for _ in range(skip):
 		next(fh)
 
@@ -192,11 +192,15 @@ def process_file(filename, data_type, word_counter, char_counter):
 		answer_start, answer_end = lcs(passage_concat.lower(),answer_text.lower())
 		answer_span = []
 
+		if answer_start == answer_end:
+			pass
 		# word index for answer span
 		for idx, span in enumerate(spans):
 			#if not (answer_end <= span[0] or answer_start >= span[1]):
 			if not (answer_end <= span[0] or answer_start >= span[1]):
 				answer_span.append(idx)
+			else:
+				print(span)
 		try:
 			y1, y2 = answer_span[0], answer_span[-1]
 		except Exception as e:
