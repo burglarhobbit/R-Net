@@ -73,10 +73,12 @@ def convert_tokens(eval_file, qa_id, pp1, pp2):
 		passage_concat = eval_file[str(qid)]["passage_concat"]
 		spans = eval_file[str(qid)]["spans"]
 		uuid = eval_file[str(qid)]["uuid"]
-				
+		spans_l = len(spans)
 		if p1 >= len(spans) or p2 >= len(spans):
 			outlier = True
-			continue
+			p1 = p1%spans_l
+			p2 = p1%spans_l
+			#continue
 			# it will return {},{},True
 			#return answer_dict,remapped_dict,outlier
 		#try:
