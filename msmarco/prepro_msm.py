@@ -207,7 +207,8 @@ def process_file(filename, data_type, word_counter, char_counter):
 			print(answer_span,answer_start,answer_end)
 			print(passage_concat)
 			print(answer_text)
-			break
+			import sys
+			sys.exit()
 		y1s.append(y1)
 		y2s.append(y2)
 		example = {"passage_tokens": passage_tokens, "passage_chars": passage_chars, "ques_tokens": ques_tokens,
