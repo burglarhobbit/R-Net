@@ -34,8 +34,8 @@ def train(config):
 
     model = Model(config, iterator, word_mat, char_mat)
 
-    #gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.5)
-    sess_config = tf.ConfigProto(allow_soft_placement=True)
+    gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.5)
+    sess_config = tf.ConfigProto(allow_soft_placement=True,gpu_options=gpu_options)
     sess_config.gpu_options.allow_growth = True
 
     loss_save = 100.0
