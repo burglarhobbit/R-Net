@@ -93,6 +93,8 @@ def _lcs(X, Y, m, n):
 		else:
 			j-=1
 	#print "LCS of " + X + " and " + Y + " is " + "".join(lcs)
+	if answer_start == answer_end:
+		answer_end += 1
 	return answer_start,answer_end
 """
 def _lcs(X, Y, m, n):
@@ -192,18 +194,18 @@ def process_file(filename, data_type, word_counter, char_counter):
 		answer_start, answer_end = lcs(passage_concat.lower(),answer_text.lower())
 		answer_span = []
 
-		if answer_start == answer_end:
-			pass
+		temp_span = []
 		# word index for answer span
 		for idx, span in enumerate(spans):
 			#if not (answer_end <= span[0] or answer_start >= span[1]):
 			if not (answer_end <= span[0] or answer_start >= span[1]):
 				answer_span.append(idx)
 			else:
-				print(span)
+				temp_span.append(span)
 		try:
 			y1, y2 = answer_span[0], answer_span[-1]
 		except Exception as e:
+			print(temp_span)
 			print(answer_span,answer_start,answer_end)
 			print(passage_concat)
 			print(answer_text)
