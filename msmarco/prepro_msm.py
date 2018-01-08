@@ -149,9 +149,11 @@ def process_file(filename, data_type, word_counter, char_counter):
 		total_lines = 10047 # ms marco dev data set lines (for test, we use dev data set)
 	line_count = 0
 
+	do_skip_lines = False
 	skip = 1330+789
-	for _ in range(skip):
-		next(fh)
+	if do_skip_lines:
+		for _ in range(skip):
+			next(fh)
 
 	#while(line):
 	for i in tqdm(range(total_lines)):
@@ -195,6 +197,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 		answer_span = []
 
 		temp_span = []
+		
 		# word index for answer span
 		for idx, span in enumerate(spans):
 			#if not (answer_end <= span[0] or answer_start >= span[1]):
@@ -209,8 +212,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 			print(answer_span,answer_start,answer_end)
 			print(passage_concat)
 			print(answer_text)
-			import sys
-			sys.exit()
+			continue
 		y1s.append(y1)
 		y2s.append(y2)
 		example = {"passage_tokens": passage_tokens, "passage_chars": passage_chars, "ques_tokens": ques_tokens,
