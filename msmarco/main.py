@@ -94,15 +94,18 @@ def train(config):
 def evaluate_batch(model, num_batches, eval_file, sess, data_type, handle, str_handle):
 	answer_dict = {}
 	losses = []
+	outlier_count = 0
 	for _ in tqdm(range(1, num_batches + 1)):
 		qa_id, loss, yp1, yp2, = sess.run(
 			[model.qa_id, model.loss, model.yp1, model.yp2], feed_dict={handle: str_handle})
 		answer_dict_, _, outlier = convert_tokens(
 			eval_file, qa_id.tolist(), yp1.tolist(), yp2.tolist())
 		if outlier:
+			outlier_count += 1
 			continue
 		answer_dict.update(answer_dict_)
 		losses.append(loss)
+	print("outlier_count:",outlier_count)
 	loss = np.mean(losses)
 	metrics = evaluate(eval_file, answer_dict)
 	metrics["loss"] = loss
