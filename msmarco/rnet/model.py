@@ -4,7 +4,8 @@ from func import cudnn_gru, native_gru, dot_attention, summ, dropout, ptr_net
 
 class Model(object):
 	def __init__(self, config, batch, word_mat=None, char_mat=None, trainable=True, opt=True):
-		with tf.device('/device:GPU:2'):
+		with tf.device('/cpu:0'):
+		#with tf.device('/device:GPU:2'):
 			self.config = config
 			self.global_step = tf.get_variable('global_step', shape=[], dtype=tf.int32,
 											   initializer=tf.constant_initializer(0), trainable=False)
