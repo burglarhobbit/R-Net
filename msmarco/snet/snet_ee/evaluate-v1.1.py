@@ -78,7 +78,7 @@ def evaluate(dataset, predictions):
 if __name__ == '__main__':
     expected_version = '1.1'
     parser = argparse.ArgumentParser(
-        description='Evaluation for SQuAD ' + expected_version)
+        description='Evaluation for MS MARCO ' + expected_version)
     parser.add_argument('dataset_file', help='Dataset file')
     parser.add_argument('prediction_file', help='Prediction File')
     args = parser.parse_args()
