@@ -138,8 +138,9 @@ def test(config):
 
 	model = Model(config, test_batch, word_mat, char_mat, trainable=False)
 
-	sess_config = tf.ConfigProto(allow_soft_placement=True)
+	sess_config = tf.ConfigProto(allow_soft_placement=True,)
 	sess_config.gpu_options.allow_growth = True
+	#sess_config.gpu_options.allocator_type = 'BFC'
 
 	with tf.Session(config=sess_config) as sess:
 		sess.run(tf.global_variables_initializer())
