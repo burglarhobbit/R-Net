@@ -138,7 +138,7 @@ def test(config):
 
 	model = Model(config, test_batch, word_mat, char_mat, trainable=False)
 
-	gpu_options = tf.GPUOptions(visible_device_list="2")
+	gpu_options = tf.GPUOptions(visible_device_list="2,3")
 	sess_config = tf.ConfigProto(allow_soft_placement=True, gpu_options=gpu_options)
 	sess_config.gpu_options.allow_growth = True
 
