@@ -10,7 +10,7 @@ from util import get_record_parser, convert_tokens, evaluate, get_batch_dataset,
 
 def train(config):
 
-	gpu_options = tf.GPUOptions(visible_device_list="2")
+	gpu_options = tf.GPUOptions(visible_device_list="3")
 	sess_config = tf.ConfigProto(allow_soft_placement=True, gpu_options=gpu_options)
 	sess_config.gpu_options.allow_growth = True
 
@@ -96,7 +96,7 @@ def train(config):
 def evaluate_batch(model, num_batches, eval_file, sess, data_type, handle, str_handle):
 	answer_dict = {}
 	losses = []
-	outlier_count = 0
+	outlier_count = 0.0
 	for _ in tqdm(range(1, num_batches + 1)):
 		qa_id, loss, yp1, yp2, = sess.run(
 			[model.qa_id, model.loss, model.yp1, model.yp2], feed_dict={handle: str_handle})

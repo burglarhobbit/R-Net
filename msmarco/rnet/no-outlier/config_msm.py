@@ -27,9 +27,9 @@ glove_file = os.path.join(path, "snetP_data", "data", "glove", "glove.840B.300d.
 
 #target_dir = "data"
 target_dir = os.path.join(path, "snetP_data", "rnet", "msmarco")
-log_dir = os.path.join(path, "snetP_data", "rnet", "msmarco", "log", "event")
-save_dir = os.path.join(path, "snetP_data", "rnet", "msmarco", "log", "model")
-answer_dir = os.path.join(path, "snetP_data", "rnet", "msmarco","log", "answer")
+log_dir = os.path.join(path, "snetP_data", "rnet", "msmarco", "no_outlier",  "log", "event")
+save_dir = os.path.join(path, "snetP_data", "rnet", "msmarco", "no_outlier", "log", "model")
+answer_dir = os.path.join(path, "snetP_data", "rnet", "msmarco", "no_outlier", "log", "answer")
 
 train_record_file = os.path.join(target_dir, "train.tfrecords")
 dev_record_file = os.path.join(target_dir, "dev.tfrecords")
@@ -97,13 +97,13 @@ flags.DEFINE_integer("char_count_limit", -1, "Min count for char")
 flags.DEFINE_integer("capacity", 15000, "Batch size of dataset shuffle")
 flags.DEFINE_integer("num_threads", 4, "Number of threads in input pipeline")
 flags.DEFINE_boolean(
-    "use_cudnn", False, "Whether to use cudnn rnn (should be False for CPU)")
+    "use_cudnn", True, "Whether to use cudnn rnn (should be False for CPU)")
 flags.DEFINE_boolean("is_bucket", True, "build bucket batch iterator or not")
 flags.DEFINE_integer("bucket_range", [40, 401, 40], "the range of bucket")
 
 flags.DEFINE_integer("batch_size", 64, "Batch size")
 flags.DEFINE_integer("num_steps", 50000, "Number of steps")
-flags.DEFINE_integer("checkpoint", 1000,
+flags.DEFINE_integer("checkpoint", 100,
                      "checkpoint to save and evaluate the model")
 flags.DEFINE_integer("period", 100, "period to save batch loss")
 flags.DEFINE_integer("val_num_batches", 150,

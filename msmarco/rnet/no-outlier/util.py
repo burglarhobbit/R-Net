@@ -75,7 +75,8 @@ def convert_tokens(eval_file, qa_id, pp1, pp2):
 		uuid = eval_file[str(qid)]["uuid"]
 		spans_l = len(spans)
 		if p1 >= len(spans) or p2 >= len(spans):
-			outlier = True
+			continue
+			#outlier = True
 			p1 = p1%spans_l
 			p2 = p1%spans_l
 			#continue
@@ -95,6 +96,8 @@ def convert_tokens(eval_file, qa_id, pp1, pp2):
 		"""
 		answer_dict[str(qid)] = passage_concat[start_idx: end_idx]
 		remapped_dict[uuid] = passage_concat[start_idx: end_idx]
+	if answer_dict == {}:
+		outlier = True
 	return answer_dict, remapped_dict, outlier
 
 
