@@ -32,8 +32,7 @@ def train(config):
 	train_iterator = train_dataset.make_one_shot_iterator()
 	dev_iterator = dev_dataset.make_one_shot_iterator()
 
-	with tf.device('/cpu:0'):
-		model = Model(config, iterator, word_mat, char_mat)
+	model = Model(config, iterator, word_mat, char_mat)
 
 	#gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.5)
 	sess_config = tf.ConfigProto(allow_soft_placement=True)
