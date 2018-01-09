@@ -9,6 +9,11 @@ from util import get_record_parser, convert_tokens, evaluate, get_batch_dataset,
 
 
 def train(config):
+
+	gpu_options = tf.GPUOptions(visible_device_list="2")
+	sess_config = tf.ConfigProto(allow_soft_placement=True, gpu_options=gpu_options)
+	sess_config.gpu_options.allow_growth = True
+	
 	with open(config.word_emb_file, "r") as fh:
 		word_mat = np.array(json.load(fh), dtype=np.float32)
 	with open(config.char_emb_file, "r") as fh:
@@ -33,10 +38,6 @@ def train(config):
 	dev_iterator = dev_dataset.make_one_shot_iterator()
 
 	model = Model(config, iterator, word_mat, char_mat)
-
-	#gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.5)
-	sess_config = tf.ConfigProto(allow_soft_placement=True)
-	sess_config.gpu_options.allow_growth = True
 
 	loss_save = 100.0
 	patience = 0
