@@ -64,6 +64,8 @@ def evaluate(eval_file, answer_dict):
 	rouge = Rouge()
 	#for key in answer_dict.items()
 
+	## converting eval_file keys to format of answer_dict keys format
+	# i.e (remapped_answer_dict format): read utils->convert_tokens and main.py->test last few lines
 	remapped_eval_file = {}
 
 	for key, value in eval_file.items():
