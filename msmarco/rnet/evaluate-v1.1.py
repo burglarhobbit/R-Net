@@ -71,7 +71,7 @@ def evaluate(eval_file, answer_dict):
 	for key, value in eval_file.items():
 		uuid = eval_file[key]["uuid"]
 		#print(type(uuid))
-		remapped_eval_file[str(uuid)] = eval_file[key]["answers"]
+		remapped_eval_file[str(uuid)] = eval_file[key]["answers"][0]
 	
 	a = remapped_eval_file.keys()
 	b = []
