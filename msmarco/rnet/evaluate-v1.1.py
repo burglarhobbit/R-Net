@@ -55,6 +55,8 @@ def rouge_l(rouge_obj, prediction, ground_truth):
 	ground_truth_tokens = normalize_answer(ground_truth)
 	scores = rouge_obj.get_scores(ground_truth_tokens, prediction_tokens)
 	rouge_l_ = scores[0]['rouge-l']['p']
+	print(prediction_tokens)
+	print(ground_truth_tokens)
 	return rouge_l_
 
 def evaluate(eval_file, answer_dict):
@@ -89,7 +91,7 @@ def evaluate(eval_file, answer_dict):
 		f1 += metric_max_over_ground_truths(f1_score,
 											prediction, ground_truths)
 		rouge_l_ += rouge_l(rouge, prediction, ground_truths)
-		print(key)
+		#print(key)
 	exact_match = 100.0 * exact_match / total
 	f1 = 100.0 * f1 / total
 	rouge_l_ = 100.0 * rouge_l_ / total
