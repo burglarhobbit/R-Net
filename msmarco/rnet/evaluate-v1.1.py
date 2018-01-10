@@ -76,8 +76,7 @@ def evaluate(eval_file, answer_dict):
 	a = remapped_eval_file.keys()
 	b = []
 	for i in answer_dict.keys():
-		print(type(i))
-		break
+		b.append(str(i))
 	print(len(a))
 	print(len(b))
 	print(len(list(set(a).intersection(b))))
