@@ -23,7 +23,8 @@ def normalize_answer(s):
     def lower(text):
         return text.lower()
 
-    return white_space_fix(remove_articles(remove_punc(lower(s))))
+    #return white_space_fix(remove_articles(remove_punc(lower(s))))
+    return lower(s)
 
 
 def f1_score(prediction, ground_truth):
@@ -53,25 +54,45 @@ def rouge_l(rouge_obj, prediction, ground_truth):
 
     prediction_tokens = normalize_answer(prediction)
     ground_truth_tokens = normalize_answer(ground_truth)
-    scores = rouge_obj.get_scores(ground_truth_tokens)
-    rogue_l_ = json.loads(scores)['rouge-l']['p']
+    scores = rouge_obj.get_scores(ground_truth_tokens, prediction_tokens)
+    rouge_l_ = scores[0]['rouge-l']['p']
+    #print(prediction_tokens)
+    #print(ground_truth_tokens)
     return rouge_l_
 
 def evaluate(eval_file, answer_dict):
-    f1 = exact_match = total = 0
+    f1 = rouge_l_= exact_match = total =  0
     from rouge import Rouge
     
     rouge = Rouge()
+    #for key in answer_dict.items()
 
+    ## converting eval_file keys to format of answer_dict keys format
+    # i.e (remapped_answer_dict format): read utils->convert_tokens and main.py->test last few lines
+    remapped_eval_file = {}
+
+    for key, value in eval_file.items():
+        uuid = eval_file[key]["uuid"]
+        #print(type(uuid))
+        remapped_eval_file[str(uuid)] = eval_file[key]["answers"][0]
+    
+    a = remapped_eval_file.keys()
+    b = []
+    for i in answer_dict.keys():
+        b.append(str(i))
+    #print(len(a))
+    #print(len(b))
+    print(len(list(set(a).intersection(b))))
     for key, value in answer_dict.items():
         total += 1
-        ground_truths = eval_file[key]["answers"]
+        ground_truths = remapped_eval_file[str(key)]
         prediction = value
         exact_match += metric_max_over_ground_truths(
             exact_match_score, prediction, ground_truths)
         f1 += metric_max_over_ground_truths(f1_score,
                                             prediction, ground_truths)
-        rouge_l_ += rouge_l(prediction, ground_truths)
+        rouge_l_ += rouge_l(rouge, prediction, ground_truths)
+        #print(key)
     exact_match = 100.0 * exact_match / total
     f1 = 100.0 * f1 / total
     rouge_l_ = 100.0 * rouge_l_ / total
@@ -86,7 +107,7 @@ if __name__ == '__main__':
     parser.add_argument('prediction_file', help='Prediction File')
     args = parser.parse_args()
     with open(args.dataset_file) as dataset_file:
-        dataset_json = json.load(dataset_file)
+        dataset = json.load(dataset_file)
         #if (dataset_json['version'] != expected_version):
         #   print('Evaluation expects v-' + expected_version +
         #         ', but got dataset with v-' + dataset_json['version'],
