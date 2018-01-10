@@ -86,7 +86,7 @@ if __name__ == '__main__':
 	parser.add_argument('prediction_file', help='Prediction File')
 	args = parser.parse_args()
 	with open(args.dataset_file) as dataset_file:
-		dataset_json = json.load(dataset_file)
+		dataset = json.load(dataset_file)
 		#if (dataset_json['version'] != expected_version):
 		#	print('Evaluation expects v-' + expected_version +
 		#		  ', but got dataset with v-' + dataset_json['version'],
