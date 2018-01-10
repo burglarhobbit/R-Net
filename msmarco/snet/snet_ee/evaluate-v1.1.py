@@ -91,7 +91,7 @@ if __name__ == '__main__':
         #   print('Evaluation expects v-' + expected_version +
         #         ', but got dataset with v-' + dataset_json['version'],
         #         file=sys.stderr)
-        dataset = dataset_json['data']
+        #dataset = dataset_json['data']
     with open(args.prediction_file) as prediction_file:
         predictions = json.load(prediction_file)
     print(json.dumps(evaluate(dataset, predictions)))
