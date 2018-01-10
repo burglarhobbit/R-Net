@@ -145,8 +145,6 @@ def test(config):
 
 	model = Model(config, test_batch, word_mat, char_mat, trainable=False)
 
-	
-
 	with tf.Session(config=sess_config) as sess:
 		sess.run(tf.global_variables_initializer())
 		saver = tf.train.Saver()
@@ -160,6 +158,8 @@ def test(config):
 				[model.qa_id, model.loss, model.yp1, model.yp2])
 			answer_dict_, remapped_dict_, outlier = convert_tokens(
 				eval_file, qa_id.tolist(), yp1.tolist(), yp2.tolist())
+			if outlier:
+				continue
 			answer_dict.update(answer_dict_)
 			remapped_dict.update(remapped_dict_)
 			losses.append(loss)
