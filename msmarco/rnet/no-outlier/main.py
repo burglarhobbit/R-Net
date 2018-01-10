@@ -123,7 +123,6 @@ def evaluate_batch(model, num_batches, eval_file, sess, data_type, handle, str_h
 		tag="{}/outlier_count".format(data_type), simple_value=outlier_count), ])
 	return metrics, [loss_sum, f1_sum, em_sum, rouge_l, outlier_c]
 
-
 def test(config):
 
 	gpu_options = tf.GPUOptions(visible_device_list="3")

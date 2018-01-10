@@ -79,7 +79,6 @@ flags.DEFINE_string("dev_meta", dev_meta, "Out file for dev meta")
 flags.DEFINE_string("test_meta", test_meta, "Out file for test meta")
 flags.DEFINE_string("answer_file", answer_file, "Out file for answer")
 
-
 flags.DEFINE_integer("glove_size", int(2.2e6), "Corpus size for Glove")
 flags.DEFINE_integer("glove_dim", 300, "Embedding dimension for Glove")
 flags.DEFINE_integer("char_dim", 8, "Embedding dimension for char")
@@ -103,7 +102,7 @@ flags.DEFINE_integer("bucket_range", [40, 401, 40], "the range of bucket")
 
 flags.DEFINE_integer("batch_size", 64, "Batch size")
 flags.DEFINE_integer("num_steps", 50000, "Number of steps")
-flags.DEFINE_integer("checkpoint", 100,
+flags.DEFINE_integer("checkpoint", 1000,
                      "checkpoint to save and evaluate the model")
 flags.DEFINE_integer("period", 100, "period to save batch loss")
 flags.DEFINE_integer("val_num_batches", 150,
