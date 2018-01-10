@@ -70,15 +70,19 @@ def evaluate(eval_file, answer_dict):
 
 	for key, value in eval_file.items():
 		uuid = eval_file[key]["uuid"]
-		remapped_eval_file[uuid] = eval_file[key]["answers"]
+		remapped_eval_file[str(uuid)] = eval_file[key]["answers"]
+	
 	a = remapped_eval_file.keys()
-	b = answer_dict.keys()
+	b = []
+	for i in answer_dict.keys():
+		print(type(i))
+		break
 	print(len(a))
 	print(len(b))
 	print(len(list(set(a).intersection(b))))
 	for key, value in answer_dict.items():
 		total += 1
-		ground_truths = remapped_eval_file[key]["answers"]
+		ground_truths = remapped_eval_file[str(key)]
 		prediction = value
 		exact_match += metric_max_over_ground_truths(
 			exact_match_score, prediction, ground_truths)
