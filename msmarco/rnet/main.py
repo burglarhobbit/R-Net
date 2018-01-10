@@ -156,7 +156,7 @@ def test(config):
 		for step in tqdm(range(total // config.batch_size + 1)):
 			qa_id, loss, yp1, yp2 = sess.run(
 				[model.qa_id, model.loss, model.yp1, model.yp2])
-			answer_dict_, remapped_dict_ = convert_tokens(
+			answer_dict_, remapped_dict_, outlier = convert_tokens(
 				eval_file, qa_id.tolist(), yp1.tolist(), yp2.tolist())
 			answer_dict.update(answer_dict_)
 			remapped_dict.update(remapped_dict_)
