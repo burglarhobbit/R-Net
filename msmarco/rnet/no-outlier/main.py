@@ -96,7 +96,7 @@ def train(config):
 def evaluate_batch(model, num_batches, eval_file, sess, data_type, handle, str_handle):
 	answer_dict = {}
 	losses = []
-	outlier_count = 0.0
+	outlier_count = 0
 	for _ in tqdm(range(1, num_batches + 1)):
 		qa_id, loss, yp1, yp2, = sess.run(
 			[model.qa_id, model.loss, model.yp1, model.yp2], feed_dict={handle: str_handle})
@@ -117,9 +117,11 @@ def evaluate_batch(model, num_batches, eval_file, sess, data_type, handle, str_h
 		tag="{}/f1".format(data_type), simple_value=metrics["f1"]), ])
 	em_sum = tf.Summary(value=[tf.Summary.Value(
 		tag="{}/em".format(data_type), simple_value=metrics["exact_match"]), ])
+	rouge-l = tf.Summary(value=[tf.Summary.Value(
+		tag="{}/rouge-l".format(data_type), simple_value=metrics["rouge-l"]), ])
 	outlier_c = tf.Summary(value=[tf.Summary.Value(
 		tag="{}/outlier_count".format(data_type), simple_value=outlier_count), ])
-	return metrics, [loss_sum, f1_sum, em_sum]
+	return metrics, [loss_sum, f1_sum, em_sum, outlier_c]
 
 
 def test(config):
