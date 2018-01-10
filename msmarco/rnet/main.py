@@ -68,7 +68,6 @@ def train(config):
 					model, config.val_num_batches, train_eval_file, sess, "train", handle, train_handle)
 				for s in summ:
 					writer.add_summary(s, global_step)
-
 				metrics, summ = evaluate_batch(
 					model, dev_total // config.batch_size + 1, dev_eval_file, sess, "dev", handle, dev_handle)
 				sess.run(tf.assign(model.is_train,
@@ -119,7 +118,7 @@ def evaluate_batch(model, num_batches, eval_file, sess, data_type, handle, str_h
 		tag="{}/em".format(data_type), simple_value=metrics["exact_match"]), ])
 	outlier_c = tf.Summary(value=[tf.Summary.Value(
 		tag="{}/outlier_count".format(data_type), simple_value=outlier_count), ])
-	return metrics, [loss_sum, f1_sum, em_sum]
+	return metrics, [loss_sum, f1_sum, em_sum, outlier_c]
 
 
 def test(config):

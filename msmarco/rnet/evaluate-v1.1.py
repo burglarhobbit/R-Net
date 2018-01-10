@@ -75,9 +75,8 @@ def evaluate(eval_file, answer_dict):
 	exact_match = 100.0 * exact_match / total
 	f1 = 100.0 * f1 / total
 	rouge_l_ = 100.0 * rouge_l_ / total
-	
-	return {'exact_match': exact_match, 'f1': f1, 'rouge-l': rouge_l_}
 
+	return {'exact_match': exact_match, 'f1': f1, 'rouge-l': rouge_l_}
 
 if __name__ == '__main__':
 	expected_version = '1.1'

@@ -42,7 +42,6 @@ def f1_score(prediction, ground_truth):
 def exact_match_score(prediction, ground_truth):
     return (normalize_answer(prediction) == normalize_answer(ground_truth))
 
-
 def metric_max_over_ground_truths(metric_fn, prediction, ground_truths):
     scores_for_ground_truths = []
     for ground_truth in ground_truths:
@@ -50,30 +49,34 @@ def metric_max_over_ground_truths(metric_fn, prediction, ground_truths):
         scores_for_ground_truths.append(score)
     return max(scores_for_ground_truths)
 
+def rouge_l(rouge_obj, prediction, ground_truth):
 
-def evaluate(dataset, predictions):
+    prediction_tokens = normalize_answer(prediction)
+    ground_truth_tokens = normalize_answer(ground_truth)
+    scores = rouge_obj.get_scores(ground_truth_tokens)
+    rogue_l_ = json.loads(scores)['rouge-l']['p']
+    return rouge_l_
+
+def evaluate(eval_file, answer_dict):
     f1 = exact_match = total = 0
-    for article in dataset:
-        for paragraph in article['paragraphs']:
-            for qa in paragraph['qas']:
-                total += 1
-                if qa['id'] not in predictions:
-                    message = 'Unanswered question ' + qa['id'] + \
-                              ' will receive score 0.'
-                    print(message, file=sys.stderr)
-                    continue
-                ground_truths = list(map(lambda x: x['text'], qa['answers']))
-                prediction = predictions[qa['id']]
-                exact_match += metric_max_over_ground_truths(
-                    exact_match_score, prediction, ground_truths)
-                f1 += metric_max_over_ground_truths(
-                    f1_score, prediction, ground_truths)
+    from rouge import Rouge
+    
+    rouge = Rouge()
 
+    for key, value in answer_dict.items():
+        total += 1
+        ground_truths = eval_file[key]["answers"]
+        prediction = value
+        exact_match += metric_max_over_ground_truths(
+            exact_match_score, prediction, ground_truths)
+        f1 += metric_max_over_ground_truths(f1_score,
+                                            prediction, ground_truths)
+        rouge_l_ += rouge_l(prediction, ground_truths)
     exact_match = 100.0 * exact_match / total
     f1 = 100.0 * f1 / total
+    rouge_l_ = 100.0 * rouge_l_ / total
 
-    return {'exact_match': exact_match, 'f1': f1}
-
+    return {'exact_match': exact_match, 'f1': f1, 'rouge-l': rouge_l_}
 
 if __name__ == '__main__':
     expected_version = '1.1'
