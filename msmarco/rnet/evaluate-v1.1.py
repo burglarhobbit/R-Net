@@ -62,7 +62,7 @@ def evaluate(eval_file, answer_dict):
 	from rouge import Rouge
 	
 	rouge = Rouge()
-
+	#for key in answer_dict.items()
 	for key, value in answer_dict.items():
 		total += 1
 		ground_truths = eval_file[key]["answers"]
@@ -72,6 +72,7 @@ def evaluate(eval_file, answer_dict):
 		f1 += metric_max_over_ground_truths(f1_score,
 											prediction, ground_truths)
 		rouge_l_ += rouge_l(prediction, ground_truths)
+		print(key)
 	exact_match = 100.0 * exact_match / total
 	f1 = 100.0 * f1 / total
 	rouge_l_ = 100.0 * rouge_l_ / total
