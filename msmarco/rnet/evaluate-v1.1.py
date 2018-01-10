@@ -63,9 +63,16 @@ def evaluate(eval_file, answer_dict):
 	
 	rouge = Rouge()
 	#for key in answer_dict.items()
+
+	remapped_eval_file = {}
+
+	for key, value in eval_file.items():
+		uuid = eval_file[key]["uuid"]
+		remapped_eval_file[uuid] = eval_file[key]["answers"]
+
 	for key, value in answer_dict.items():
 		total += 1
-		ground_truths = eval_file[key]["answers"]
+		ground_truths = remapped_eval_file[key]["answers"]
 		prediction = value
 		exact_match += metric_max_over_ground_truths(
 			exact_match_score, prediction, ground_truths)

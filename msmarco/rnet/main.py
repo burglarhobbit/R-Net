@@ -161,6 +161,9 @@ def test(config):
 			remapped_dict.update(remapped_dict_)
 			losses.append(loss)
 		loss = np.mean(losses)
+
+		# evaluate with answer_dict, but in evaluate-v1.1.py, evaluate with remapped_dict
+		# since only that is saved. Both dict are a little bit different, check evaluate-v1.1.py
 		metrics = evaluate(eval_file, answer_dict)
 		with open(config.answer_file, "w") as fh:
 			json.dump(remapped_dict, fh)
