@@ -58,7 +58,7 @@ def rouge_l(rouge_obj, prediction, ground_truth):
 	return rouge_l_
 
 def evaluate(eval_file, answer_dict):
-	f1 = exact_match = total = 0
+	f1 = rouge_l_= exact_match = total =  0
 	from rouge import Rouge
 	
 	rouge = Rouge()
@@ -70,6 +70,7 @@ def evaluate(eval_file, answer_dict):
 
 	for key, value in eval_file.items():
 		uuid = eval_file[key]["uuid"]
+		print(type(uuid))
 		remapped_eval_file[str(uuid)] = eval_file[key]["answers"]
 	
 	a = remapped_eval_file.keys()
