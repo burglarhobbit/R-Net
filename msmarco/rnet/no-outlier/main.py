@@ -123,6 +123,11 @@ def evaluate_batch(model, num_batches, eval_file, sess, data_type, handle, str_h
 
 
 def test(config):
+
+	gpu_options = tf.GPUOptions(visible_device_list="3")
+	sess_config = tf.ConfigProto(allow_soft_placement=True, gpu_options=gpu_options)
+	sess_config.gpu_options.allow_growth = True
+
 	with open(config.word_emb_file, "r") as fh:
 		word_mat = np.array(json.load(fh), dtype=np.float32)
 	with open(config.char_emb_file, "r") as fh:
@@ -140,9 +145,7 @@ def test(config):
 
 	model = Model(config, test_batch, word_mat, char_mat, trainable=False)
 
-	gpu_options = tf.GPUOptions(visible_device_list="2,3")
-	sess_config = tf.ConfigProto(allow_soft_placement=True, gpu_options=gpu_options)
-	sess_config.gpu_options.allow_growth = True
+	
 
 	with tf.Session(config=sess_config) as sess:
 		sess.run(tf.global_variables_initializer())
