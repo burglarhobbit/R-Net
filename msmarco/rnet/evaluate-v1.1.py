@@ -54,7 +54,7 @@ def rouge_l(rouge_obj, prediction, ground_truth):
 	prediction_tokens = normalize_answer(prediction)
 	ground_truth_tokens = normalize_answer(ground_truth)
 	scores = rouge_obj.get_scores(ground_truth_tokens, prediction_tokens)
-	rogue_l_ = json.loads(scores)['rouge-l']['p']
+	rogue_l_ = scores[0]['rouge-l']['p']
 	return rouge_l_
 
 def evaluate(eval_file, answer_dict):
