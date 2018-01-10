@@ -70,15 +70,15 @@ def evaluate(eval_file, answer_dict):
 
 	for key, value in eval_file.items():
 		uuid = eval_file[key]["uuid"]
-		print(type(uuid))
+		#print(type(uuid))
 		remapped_eval_file[str(uuid)] = eval_file[key]["answers"]
 	
 	a = remapped_eval_file.keys()
 	b = []
 	for i in answer_dict.keys():
 		b.append(str(i))
-	print(len(a))
-	print(len(b))
+	#print(len(a))
+	#print(len(b))
 	print(len(list(set(a).intersection(b))))
 	for key, value in answer_dict.items():
 		total += 1
@@ -88,7 +88,7 @@ def evaluate(eval_file, answer_dict):
 			exact_match_score, prediction, ground_truths)
 		f1 += metric_max_over_ground_truths(f1_score,
 											prediction, ground_truths)
-		rouge_l_ += rouge_l(prediction, ground_truths)
+		rouge_l_ += rouge_l(rouge, prediction, ground_truths)
 		print(key)
 	exact_match = 100.0 * exact_match / total
 	f1 = 100.0 * f1 / total
