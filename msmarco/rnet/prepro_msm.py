@@ -94,7 +94,7 @@ def _lcs(X, Y, m, n):
 			j-=1
 	#print "LCS of " + X + " and " + Y + " is " + "".join(lcs)
 	#if answer_start == answer_end:
-	#	answer_end += 1
+	#   answer_end += 1
 	return answer_start,answer_end+1
 """
 def _lcs(X, Y, m, n):
@@ -112,10 +112,10 @@ def _lcs(X, Y, m, n):
 	answer_end = len(X)
 	answer_end_match = False
 	lcs = [""] * (index+1)
-	lcs[index] = "\0"	
+	lcs[index] = "\0"   
 	i = m
 	j = n
-	while i > 0 and j > 0:	
+	while i > 0 and j > 0:  
 		if X[i-1] == Y[j-1]:
 			lcs[index-1] = X[i-1]
 			i-=1
@@ -220,13 +220,12 @@ def process_file(filename, data_type, word_counter, char_counter):
 		example = {"passage_tokens": passage_tokens, "passage_chars": passage_chars, "ques_tokens": ques_tokens,
 				   "ques_chars": ques_chars, "y1s": y1s, "y2s": y2s, "id": total}
 		examples.append(example)
-		
 		eval_examples[str(total)] = {
 			"passage_concat": passage_concat, "spans": spans, "answers": answer_texts, "uuid": source["query_id"]}
 		line = fh.readline()
 	random.shuffle(examples)
 	print("{} questions in total".format(len(examples)))
-		
+
 	"""
 	# original implementation for comparision purposes
 	with open(filename, "r") as fh:
