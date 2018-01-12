@@ -68,19 +68,51 @@ def get_dataset(record_file, parser, config):
 def convert_tokens(eval_file, qa_id, pp1, pp2):
     answer_dict = {}
     remapped_dict = {}
+    outlier = False
     for qid, p1, p2 in zip(qa_id, pp1, pp2):
         passage_concat = eval_file[str(qid)]["passage_concat"]
         spans = eval_file[str(qid)]["spans"]
         uuid = eval_file[str(qid)]["uuid"]
+        spans_l = len(spans)
+        if p1 >= len(spans) or p2 >= len(spans):
+            outlier = True
+            p1 = p1%spans_l
+            p2 = p1%spans_l
+            #continue
+            # it will return {},{},True
+            #return answer_dict,remapped_dict,outlier
+        #try:
         start_idx = spans[p1][0]
         end_idx = spans[p2][1]
+        """except:
+            print(passage_concat)
+            print(spans)
+            print(len(spans))
+            print(uuid)
+            print(p1,p2)
+            import sys
+            sys.exit()
+        """
         answer_dict[str(qid)] = passage_concat[start_idx: end_idx]
         remapped_dict[uuid] = passage_concat[start_idx: end_idx]
-    return answer_dict, remapped_dict
+    return answer_dict, remapped_dict, outlier
 
+def rouge_l(rouge_obj, prediction, ground_truth):
+
+    prediction_tokens = normalize_answer(prediction)
+    ground_truth_tokens = normalize_answer(ground_truth)
+    scores = rouge_obj.get_scores(ground_truth_tokens, prediction_tokens)
+    rouge_l_ = scores[0]['rouge-l']['p']
+    #print(prediction_tokens)
+    #print(ground_truth_tokens)
+    return rouge_l_
 
 def evaluate(eval_file, answer_dict):
-    f1 = exact_match = total = 0
+    from rouge import Rouge
+    
+    f1 = exact_match = rouge_l_= total = 0
+    rouge = Rouge()
+
     for key, value in answer_dict.items():
         total += 1
         ground_truths = eval_file[key]["answers"]
@@ -89,9 +121,11 @@ def evaluate(eval_file, answer_dict):
             exact_match_score, prediction, ground_truths)
         f1 += metric_max_over_ground_truths(f1_score,
                                             prediction, ground_truths)
+        rouge_l_ += rouge_l(rouge, prediction, ground_truths[0])
     exact_match = 100.0 * exact_match / total
     f1 = 100.0 * f1 / total
-    return {'exact_match': exact_match, 'f1': f1}
+    rouge_l_ = 100.0 * rouge_l_ / total
+    return {'exact_match': exact_match, 'f1': f1, 'rouge-l': rouge_l_}
 
 
 def normalize_answer(s):
@@ -109,8 +143,8 @@ def normalize_answer(s):
     def lower(text):
         return text.lower()
 
-    return white_space_fix(remove_articles(remove_punc(lower(s))))
-
+    #return white_space_fix(remove_articles(remove_punc(lower(s))))
+    return lower(s)
 
 def f1_score(prediction, ground_truth):
     prediction_tokens = normalize_answer(prediction).split()
