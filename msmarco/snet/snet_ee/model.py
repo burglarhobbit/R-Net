@@ -115,7 +115,8 @@ class Model(object):
 						keep_prob=config.ptr_keep_prob, is_train=self.is_train)
 			pointer = ptr_net(batch=N, hidden=init.get_shape().as_list(
 			)[-1], keep_prob=config.ptr_keep_prob, is_train=self.is_train)
-			logits1, logits2 = pointer(init, match, d, self.c_mask)
+			#logits1, logits2 = pointer(init, match, d, self.c_mask)
+			logits1, logits2 = pointer(init, att, d, self.c_mask)
 
 		with tf.variable_scope("predict"):
 			outer = tf.matmul(tf.expand_dims(tf.nn.softmax(logits1), axis=2),
