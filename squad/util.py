@@ -3,6 +3,7 @@ import re
 from collections import Counter
 import string
 
+
 def get_record_parser(config, is_test=False):
     def parse(example):
         para_limit = config.test_para_limit if is_test else config.para_limit
@@ -10,20 +11,20 @@ def get_record_parser(config, is_test=False):
         char_limit = config.char_limit
         features = tf.parse_single_example(example,
                                            features={
-                                               "passage_idxs": tf.FixedLenFeature([], tf.string),
+                                               "context_idxs": tf.FixedLenFeature([], tf.string),
                                                "ques_idxs": tf.FixedLenFeature([], tf.string),
-                                               "passage_char_idxs": tf.FixedLenFeature([], tf.string),
+                                               "context_char_idxs": tf.FixedLenFeature([], tf.string),
                                                "ques_char_idxs": tf.FixedLenFeature([], tf.string),
                                                "y1": tf.FixedLenFeature([], tf.string),
                                                "y2": tf.FixedLenFeature([], tf.string),
                                                "id": tf.FixedLenFeature([], tf.int64)
                                            })
-        passage_idxs = tf.reshape(tf.decode_raw(
-            features["passage_idxs"], tf.int32), [para_limit])
+        context_idxs = tf.reshape(tf.decode_raw(
+            features["context_idxs"], tf.int32), [para_limit])
         ques_idxs = tf.reshape(tf.decode_raw(
             features["ques_idxs"], tf.int32), [ques_limit])
-        passage_char_idxs = tf.reshape(tf.decode_raw(
-            features["passage_char_idxs"], tf.int32), [para_limit, char_limit])
+        context_char_idxs = tf.reshape(tf.decode_raw(
+            features["context_char_idxs"], tf.int32), [para_limit, char_limit])
         ques_char_idxs = tf.reshape(tf.decode_raw(
             features["ques_char_idxs"], tf.int32), [ques_limit, char_limit])
         y1 = tf.reshape(tf.decode_raw(
@@ -31,7 +32,7 @@ def get_record_parser(config, is_test=False):
         y2 = tf.reshape(tf.decode_raw(
             features["y2"], tf.float32), [para_limit])
         qa_id = features["id"]
-        return passage_idxs, ques_idxs, passage_char_idxs, ques_char_idxs, y1, y2, qa_id
+        return context_idxs, ques_idxs, context_char_idxs, ques_char_idxs, y1, y2, qa_id
     return parse
 
 
@@ -42,9 +43,9 @@ def get_batch_dataset(record_file, parser, config):
     if config.is_bucket:
         buckets = [tf.constant(num) for num in range(*config.bucket_range)]
 
-        def key_func(passage_idxs, ques_idxs, passage_char_idxs, ques_char_idxs, y1, y2, qa_id):
+        def key_func(context_idxs, ques_idxs, context_char_idxs, ques_char_idxs, y1, y2, qa_id):
             c_len = tf.reduce_sum(
-                tf.cast(tf.cast(passage_idxs, tf.bool), tf.int32))
+                tf.cast(tf.cast(context_idxs, tf.bool), tf.int32))
             t = tf.clip_by_value(buckets, 0, c_len)
             return tf.argmax(t)
 
@@ -69,13 +70,13 @@ def convert_tokens(eval_file, qa_id, pp1, pp2):
     answer_dict = {}
     remapped_dict = {}
     for qid, p1, p2 in zip(qa_id, pp1, pp2):
-        passage_concat = eval_file[str(qid)]["passage_concat"]
+        context = eval_file[str(qid)]["context"]
         spans = eval_file[str(qid)]["spans"]
         uuid = eval_file[str(qid)]["uuid"]
         start_idx = spans[p1][0]
         end_idx = spans[p2][1]
-        answer_dict[str(qid)] = passage_concat[start_idx: end_idx]
-        remapped_dict[uuid] = passage_concat[start_idx: end_idx]
+        answer_dict[str(qid)] = context[start_idx: end_idx]
+        remapped_dict[uuid] = context[start_idx: end_idx]
     return answer_dict, remapped_dict
 
 

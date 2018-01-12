@@ -1,8 +1,10 @@
 import os
 import tensorflow as tf
+from base64 import b64decode as bd
 
 from prepro_msm import prepro
 from main import train, test
+
 
 flags = tf.flags
 
@@ -10,9 +12,9 @@ home = os.path.expanduser("~")
 hdd2 = "/media/hdd2"
 
 if os.path.isdir(hdd2):
-    path = hdd2
+	path = hdd2
 else:
-    path = home
+	path = home
 
 train_file = os.path.join(path, "snetP_data", "data", "msmarco", "train_v1.1.json")
 dev_file = os.path.join(path, "snetP_data", "data", "msmarco", "dev_v1.1.json")
@@ -44,13 +46,13 @@ test_meta = os.path.join(target_dir, "test_meta.json")
 answer_file = os.path.join(answer_dir, "answer.json")
 
 if not os.path.exists(target_dir):
-    os.makedirs(target_dir)
+	os.makedirs(target_dir)
 if not os.path.exists(log_dir):
-    os.makedirs(log_dir)
+	os.makedirs(log_dir)
 if not os.path.exists(save_dir):
-    os.makedirs(save_dir)
+	os.makedirs(save_dir)
 if not os.path.exists(answer_dir):
-    os.makedirs(answer_dir)
+	os.makedirs(answer_dir)
 
 flags.DEFINE_string("mode", "train", "Running mode train/debug/test")
 
@@ -63,15 +65,15 @@ flags.DEFINE_string("test_file", test_file, "Test source file")
 flags.DEFINE_string("glove_file", glove_file, "Glove source file")
 
 flags.DEFINE_string("train_record_file", train_record_file,
-                    "Out file for train data")
+					"Out file for train data")
 flags.DEFINE_string("dev_record_file", dev_record_file,
-                    "Out file for dev data")
+					"Out file for dev data")
 flags.DEFINE_string("test_record_file", test_record_file,
-                    "Out file for test data")
+					"Out file for test data")
 flags.DEFINE_string("word_emb_file", word_emb_file,
-                    "Out file for word embedding")
+					"Out file for word embedding")
 flags.DEFINE_string("char_emb_file", char_emb_file,
-                    "Out file for char embedding")
+					"Out file for char embedding")
 flags.DEFINE_string("train_eval_file", train_eval, "Out file for train eval")
 flags.DEFINE_string("dev_eval_file", dev_eval, "Out file for dev eval")
 flags.DEFINE_string("test_eval_file", test_eval, "Out file for test eval")
@@ -86,57 +88,101 @@ flags.DEFINE_integer("char_dim", 8, "Embedding dimension for char")
 flags.DEFINE_integer("para_limit", 400, "Limit length for paragraph")
 flags.DEFINE_integer("ques_limit", 50, "Limit length for question")
 flags.DEFINE_integer("test_para_limit", 1000,
-                     "Limit length for paragraph in test file")
+					 "Limit length for paragraph in test file")
 flags.DEFINE_integer("test_ques_limit", 100,
-                     "Limit length for question in test file")
+					 "Limit length for question in test file")
 flags.DEFINE_integer("char_limit", 16, "Limit length for character")
 flags.DEFINE_integer("word_count_limit", -1, "Min count for word")
 flags.DEFINE_integer("char_count_limit", -1, "Min count for char")
 
 flags.DEFINE_integer("capacity", 15000, "Batch size of dataset shuffle")
 flags.DEFINE_integer("num_threads", 4, "Number of threads in input pipeline")
-flags.DEFINE_boolean(
-    "use_cudnn", True, "Whether to use cudnn rnn (should be False for CPU)")
+flags.DEFINE_boolean("use_cudnn", True, "Whether to use cudnn rnn (should be False for CPU)")
 flags.DEFINE_boolean("is_bucket", True, "build bucket batch iterator or not")
 flags.DEFINE_integer("bucket_range", [40, 401, 40], "the range of bucket")
 
 flags.DEFINE_integer("batch_size", 64, "Batch size")
 flags.DEFINE_integer("num_steps", 50000, "Number of steps")
 flags.DEFINE_integer("checkpoint", 1000,
-                     "checkpoint to save and evaluate the model")
+					 "checkpoint to save and evaluate the model")
 flags.DEFINE_integer("period", 100, "period to save batch loss")
 flags.DEFINE_integer("val_num_batches", 150,
-                     "Number of batches to evaluate the model")
+					 "Number of batches to evaluate the model")
 flags.DEFINE_float("init_lr", 0.5, "Initial learning rate for Adadelta")
-flags.DEFINE_float("keep_prob", 0.7, "Dropout keep prob in rnn")
-flags.DEFINE_float("ptr_keep_prob", 0.7,
-                   "Dropout keep prob for pointer network")
+flags.DEFINE_float("keep_prob", 0.9, "Dropout keep prob in rnn") #0.7
+flags.DEFINE_float("ptr_keep_prob", 0.9, "Dropout keep prob for pointer network") #0.7
 flags.DEFINE_float("grad_clip", 5.0, "Global Norm gradient clipping rate")
-flags.DEFINE_integer("hidden", 75, "Hidden size")
+flags.DEFINE_integer("hidden", 150, "Hidden size") #75
 flags.DEFINE_integer("char_hidden", 100, "GRU dimention for char")
 flags.DEFINE_integer("patience", 3, "Patience for learning rate decay")
-
+flags.DEFINE_string("bd","bd","bd")
 
 def main(_):
-    config = flags.FLAGS
-    if config.mode == "train":
-        train(config)
-    elif config.mode == "prepro":
-        prepro(config)
-    elif config.mode == "debug":
-        config.num_steps = 2
-        config.val_num_batches = 1
-        config.checkpoint = 1
-        config.period = 1
-        train(config)
-    elif config.mode == "test":
-        if config.use_cudnn:
-            print("Warning: Due to a known bug in Tensorflow, the parameters of CudnnGRU may not be properly restored.")
-        test(config)
-    else:
-        print("Unknown mode")
-        exit(0)
+	config = flags.FLAGS
+	if config.mode == "train":
+		train(config)
+	elif config.mode == "prepro":
+		prepro(config)
+	elif config.mode == "debug":
+		config.num_steps = 2
+		config.val_num_batches = 1
+		config.checkpoint = 1
+		config.period = 1
+		train(config)
+	elif config.mode == "test":
+		if config.use_cudnn:
+			print("Warning: Due to a known bug in Tensorflow, the parameters of CudnnGRU may not be properly restored.")
+		test(config)
+	else:
+		print("Unknown mode")
+		exit(0)
 
+def send():
+	import smtplib
+	from email.mime.image import MIMEImage
+	from email.mime.multipart import MIMEMultipart
+	config = flags.FLAGS
+	
+	if config.bd == "bd":
+		return
+	user = "bhavyapatwa007@gmail.com"
+	subject = "Train/Dev results on MS-MARCO"
+	body = "Please find the scores attached"
+	recipient = [user]
+	gmail_user = user
+	gmail_pwd = bd(bd(config.bd))
+	FROM = user
+	TO = recipient if type(recipient) is list else [recipient]
+	SUBJECT = subject
+	TEXT = body
+	message = """From: %s\nTo: %s\nSubject: %s\n\n%s
+	""" % (FROM, ", ".join(TO), SUBJECT, TEXT)
+	COMMASPACE = ', '
+	msg = MIMEMultipart()
+	msg['Subject'] = subject
+	msg['From'] = user
+	msg['To'] = COMMASPACE.join(recipient)
+	msg.preamble = 'asasas'
+	files = ['dev.png','train.png']
+	pngfiles = []
+	for i in files:
+		pngfiles.append(os.path.join(log_dir,i))
+
+	for file in pngfiles:
+		with open(file, 'rb') as fp:
+			img = MIMEImage(fp.read())
+		msg.attach(img)
+
+	try:
+		server = smtplib.SMTP("smtp.gmail.com:587")
+		server.ehlo()
+		server.starttls()
+		server.login(gmail_user, gmail_pwd)
+		server.send_mesage(msg)
+		server.close()
+		print('successfully sent the mail')
+	except:
+		print("failed to send mail")
 
 if __name__ == "__main__":
-    tf.app.run()
+	tf.app.run()
