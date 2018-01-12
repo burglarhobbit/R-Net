@@ -9,6 +9,11 @@ from util import get_record_parser, convert_tokens, evaluate, get_batch_dataset,
 
 
 def train(config):
+
+    gpu_options = tf.GPUOptions(visible_device_list="2")
+    sess_config = tf.ConfigProto(allow_soft_placement=True, gpu_options=gpu_options)
+    sess_config.gpu_options.allow_growth = True
+
     with open(config.word_emb_file, "r") as fh:
         word_mat = np.array(json.load(fh), dtype=np.float32)
     with open(config.char_emb_file, "r") as fh:
@@ -34,10 +39,6 @@ def train(config):
 
     model = Model(config, iterator, word_mat, char_mat)
 
-    gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.5)
-    sess_config = tf.ConfigProto(allow_soft_placement=True,gpu_options=gpu_options)
-    sess_config.gpu_options.allow_growth = True
-
     loss_save = 100.0
     patience = 0
     lr = config.init_lr
@@ -46,6 +47,7 @@ def train(config):
         writer = tf.summary.FileWriter(config.log_dir)
         sess.run(tf.global_variables_initializer())
         saver = tf.train.Saver()
+        #saver.restore(sess, tf.train.latest_checkpoint(config.save_dir))
         train_handle = sess.run(train_iterator.string_handle())
         dev_handle = sess.run(dev_iterator.string_handle())
         sess.run(tf.assign(model.is_train, tf.constant(True, dtype=tf.bool)))
@@ -66,7 +68,6 @@ def train(config):
                     model, config.val_num_batches, train_eval_file, sess, "train", handle, train_handle)
                 for s in summ:
                     writer.add_summary(s, global_step)
-
                 metrics, summ = evaluate_batch(
                     model, dev_total // config.batch_size + 1, dev_eval_file, sess, "dev", handle, dev_handle)
                 sess.run(tf.assign(model.is_train,
@@ -94,13 +95,18 @@ def train(config):
 def evaluate_batch(model, num_batches, eval_file, sess, data_type, handle, str_handle):
     answer_dict = {}
     losses = []
+    outlier_count = 0
     for _ in tqdm(range(1, num_batches + 1)):
         qa_id, loss, yp1, yp2, = sess.run(
             [model.qa_id, model.loss, model.yp1, model.yp2], feed_dict={handle: str_handle})
-        answer_dict_, _ = convert_tokens(
+        answer_dict_, _, outlier = convert_tokens(
             eval_file, qa_id.tolist(), yp1.tolist(), yp2.tolist())
+        if outlier:
+            outlier_count += 1
+            continue
         answer_dict.update(answer_dict_)
         losses.append(loss)
+    #print("outlier_count:",outlier_count)
     loss = np.mean(losses)
     metrics = evaluate(eval_file, answer_dict)
     metrics["loss"] = loss
@@ -110,10 +116,19 @@ def evaluate_batch(model, num_batches, eval_file, sess, data_type, handle, str_h
         tag="{}/f1".format(data_type), simple_value=metrics["f1"]), ])
     em_sum = tf.Summary(value=[tf.Summary.Value(
         tag="{}/em".format(data_type), simple_value=metrics["exact_match"]), ])
-    return metrics, [loss_sum, f1_sum, em_sum]
+    rouge_l = tf.Summary(value=[tf.Summary.Value(
+        tag="{}/rouge-l".format(data_type), simple_value=metrics["rouge-l"]), ])
+    outlier_c = tf.Summary(value=[tf.Summary.Value(
+        tag="{}/outlier_count".format(data_type), simple_value=outlier_count), ])
+    return metrics, [loss_sum, f1_sum, em_sum, rouge_l, outlier_c]
 
 
 def test(config):
+
+    gpu_options = tf.GPUOptions(visible_device_list="2")
+    sess_config = tf.ConfigProto(allow_soft_placement=True, gpu_options=gpu_options)
+    sess_config.gpu_options.allow_growth = True
+
     with open(config.word_emb_file, "r") as fh:
         word_mat = np.array(json.load(fh), dtype=np.float32)
     with open(config.char_emb_file, "r") as fh:
@@ -131,9 +146,6 @@ def test(config):
 
     model = Model(config, test_batch, word_mat, char_mat, trainable=False)
 
-    sess_config = tf.ConfigProto(allow_soft_placement=True)
-    sess_config.gpu_options.allow_growth = True
-
     with tf.Session(config=sess_config) as sess:
         sess.run(tf.global_variables_initializer())
         saver = tf.train.Saver()
@@ -145,12 +157,15 @@ def test(config):
         for step in tqdm(range(total // config.batch_size + 1)):
             qa_id, loss, yp1, yp2 = sess.run(
                 [model.qa_id, model.loss, model.yp1, model.yp2])
-            answer_dict_, remapped_dict_ = convert_tokens(
+            answer_dict_, remapped_dict_, outlier = convert_tokens(
                 eval_file, qa_id.tolist(), yp1.tolist(), yp2.tolist())
             answer_dict.update(answer_dict_)
             remapped_dict.update(remapped_dict_)
             losses.append(loss)
         loss = np.mean(losses)
+
+        # evaluate with answer_dict, but in evaluate-v1.1.py, evaluate with remapped_dict
+        # since only that is saved. Both dict are a little bit different, check evaluate-v1.1.py
         metrics = evaluate(eval_file, answer_dict)
         with open(config.answer_file, "w") as fh:
             json.dump(remapped_dict, fh)

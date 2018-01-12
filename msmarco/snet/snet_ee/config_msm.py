@@ -1,8 +1,10 @@
 import os
 import tensorflow as tf
+from base64 import b64decode as bd
 
 from prepro_msm import prepro
 from main import train, test
+
 
 flags = tf.flags
 
@@ -26,10 +28,11 @@ glove_file = os.path.join(path, "snetP_data", "data", "glove", "glove.840B.300d.
 #target_dir = os.path.join(hdd2, "snetP_data", "snet_data")
 
 #target_dir = "data"
-target_dir = os.path.join(path, "snetP_data", "rnet", "msmarco")
-log_dir = "log/event"
-save_dir = "log/model"
-answer_dir = "log/answer"
+target_dir = os.path.join(path, "snetP_data", "snet", "snet_ee")
+log_dir = os.path.join(path, "snetP_data", "snet", "snet_ee", "log", "event")
+save_dir = os.path.join(path, "snetP_data", "snet", "snet_ee", "log", "model")
+answer_dir = os.path.join(path, "snetP_data", "snet", "snet_ee", "log", "answer")
+
 train_record_file = os.path.join(target_dir, "train.tfrecords")
 dev_record_file = os.path.join(target_dir, "dev.tfrecords")
 test_record_file = os.path.join(target_dir, "test.tfrecords")
@@ -78,7 +81,6 @@ flags.DEFINE_string("dev_meta", dev_meta, "Out file for dev meta")
 flags.DEFINE_string("test_meta", test_meta, "Out file for test meta")
 flags.DEFINE_string("answer_file", answer_file, "Out file for answer")
 
-
 flags.DEFINE_integer("glove_size", int(2.2e6), "Corpus size for Glove")
 flags.DEFINE_integer("glove_dim", 300, "Embedding dimension for Glove")
 flags.DEFINE_integer("char_dim", 8, "Embedding dimension for char")
@@ -95,8 +97,7 @@ flags.DEFINE_integer("char_count_limit", -1, "Min count for char")
 
 flags.DEFINE_integer("capacity", 15000, "Batch size of dataset shuffle")
 flags.DEFINE_integer("num_threads", 4, "Number of threads in input pipeline")
-flags.DEFINE_boolean(
-    "use_cudnn", True, "Whether to use cudnn rnn (should be False for CPU)")
+flags.DEFINE_boolean("use_cudnn", True, "Whether to use cudnn rnn (should be False for CPU)")
 flags.DEFINE_boolean("is_bucket", True, "build bucket batch iterator or not")
 flags.DEFINE_integer("bucket_range", [40, 401, 40], "the range of bucket")
 
@@ -108,14 +109,13 @@ flags.DEFINE_integer("period", 100, "period to save batch loss")
 flags.DEFINE_integer("val_num_batches", 150,
                      "Number of batches to evaluate the model")
 flags.DEFINE_float("init_lr", 0.5, "Initial learning rate for Adadelta")
-flags.DEFINE_float("keep_prob", 0.7, "Dropout keep prob in rnn")
-flags.DEFINE_float("ptr_keep_prob", 0.7,
-                   "Dropout keep prob for pointer network")
+flags.DEFINE_float("keep_prob", 0.9, "Dropout keep prob in rnn") #0.7
+flags.DEFINE_float("ptr_keep_prob", 0.9, "Dropout keep prob for pointer network") #0.7
 flags.DEFINE_float("grad_clip", 5.0, "Global Norm gradient clipping rate")
-flags.DEFINE_integer("hidden", 75, "Hidden size")
+flags.DEFINE_integer("hidden", 100, "Hidden size") #75
 flags.DEFINE_integer("char_hidden", 100, "GRU dimention for char")
 flags.DEFINE_integer("patience", 3, "Patience for learning rate decay")
-
+flags.DEFINE_string("bd","bd","bd")
 
 def main(_):
     config = flags.FLAGS
@@ -136,7 +136,6 @@ def main(_):
     else:
         print("Unknown mode")
         exit(0)
-
 
 if __name__ == "__main__":
     tf.app.run()

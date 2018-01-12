@@ -94,7 +94,7 @@ def _lcs(X, Y, m, n):
 			j-=1
 	#print "LCS of " + X + " and " + Y + " is " + "".join(lcs)
 	#if answer_start == answer_end:
-	#	answer_end += 1
+	#   answer_end += 1
 	return answer_start,answer_end+1
 """
 def _lcs(X, Y, m, n):
@@ -112,10 +112,10 @@ def _lcs(X, Y, m, n):
 	answer_end = len(X)
 	answer_end_match = False
 	lcs = [""] * (index+1)
-	lcs[index] = "\0"	
+	lcs[index] = "\0"   
 	i = m
 	j = n
-	while i > 0 and j > 0:	
+	while i > 0 and j > 0:  
 		if X[i-1] == Y[j-1]:
 			lcs[index-1] = X[i-1]
 			i-=1
@@ -140,7 +140,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 
 	fh = open(filename, "r")
 	line = fh.readline()
-	line_limit = 500
+	line_limit = 300
 	if data_type == "train":
 		total_lines = 82326 # ms marco training data set lines
 	elif data_type == "dev":
@@ -155,6 +155,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 		for _ in range(skip):
 			next(fh)
 
+	#total_lines = line_limit
 	#while(line):
 	for i in tqdm(range(total_lines)):
 		source = json.loads(line)
@@ -215,16 +216,16 @@ def process_file(filename, data_type, word_counter, char_counter):
 			continue
 		y1s.append(y1)
 		y2s.append(y2)
+		total += 1
 		example = {"passage_tokens": passage_tokens, "passage_chars": passage_chars, "ques_tokens": ques_tokens,
 				   "ques_chars": ques_chars, "y1s": y1s, "y2s": y2s, "id": total}
 		examples.append(example)
-		total += 1
 		eval_examples[str(total)] = {
 			"passage_concat": passage_concat, "spans": spans, "answers": answer_texts, "uuid": source["query_id"]}
 		line = fh.readline()
 	random.shuffle(examples)
 	print("{} questions in total".format(len(examples)))
-		
+
 	"""
 	# original implementation for comparision purposes
 	with open(filename, "r") as fh:
