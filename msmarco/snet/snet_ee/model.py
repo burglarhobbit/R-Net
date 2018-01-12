@@ -108,7 +108,7 @@ class Model(object):
 			).as_list()[-1], keep_prob=config.keep_prob, is_train=self.is_train)
 			match = rnn(att, seq_len=self.c_len)
 		"""
-		match = rnn(att, seq_len=self.c_len)
+		#match = rnn(att, seq_len=self.c_len)
 		
 		with tf.variable_scope("pointer"):
 			init = summ(q[:, :, -2 * d:], d, mask=self.q_mask,
