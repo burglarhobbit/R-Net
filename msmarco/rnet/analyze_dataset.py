@@ -253,11 +253,11 @@ def process_file(filename, data_type, word_counter, char_counter):
 	
 	empty_answers = 0
 	low_rouge_l = 0
-	highest_rouge_l = 0
 	for i in range(total_lines):
 		source = json.loads(line)
 		answer_texts = []
 		answer_start = answer_end = 0
+		highest_rouge_l = 0
 		extracted_answer_text = ''
 		passage_concat = ''
 
@@ -283,7 +283,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 				# (si, ei) > not used from the line below
 				_, fpr_scores = rouge_span([extracted_answer], [answer_text])
 				print("Recall:",fpr_scores[2])
-				print("Start and end index:",start_idx,",",end_idx)
+				
 				if fpr_scores[2]>highest_rouge_l:
 					highest_rouge_l = fpr_scores[2]
 					answer_texts = [answer_text]
@@ -298,14 +298,15 @@ def process_file(filename, data_type, word_counter, char_counter):
 		print(passage_concat)
 		print("Question:",source['query'])
 		try:
+			print("Start and end index:",answer_start,",",answer_end)
 			print("Passage token length:",len(passage_tokens))
 			print("Extracted:",extracted_answer_text)
-			print("Original:",answer_texts[0])
-			print("Original-raw:",source['answers'])
+			print("Ground truth:",answer_texts[0])
+			print("Ground truth-raw:",source['answers'])
 		except Exception as e:
 			print("Extracted-raw:",passage_tokens[answer_start:answer_end])
-			print("Original:",answer_texts)
-			print("Original-raw:",source['answers'])
+			print("Ground truth:",answer_texts)
+			print("Ground truth-raw:",source['answers'])
 			a = input("Pause:")
 		print("\n\n")
 		passage_chars = [list(token) for token in passage_tokens]
