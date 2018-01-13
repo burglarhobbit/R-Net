@@ -287,9 +287,8 @@ def process_file(filename, data_type, word_counter, char_counter):
 			#if not (answer_end <= span[0] or answer_start >= span[1]):
 			if not (answer_end <= span[0] or answer_start >= span[1]):
 				answer_span.append(idx)
-		try:
-			y1, y2 = answer_start, answer_end
-		except Exception as e:
+		
+		y1, y2 = answer_start, answer_end	
 		y1s.append(y1)
 		y2s.append(y2)
 		total += 1
