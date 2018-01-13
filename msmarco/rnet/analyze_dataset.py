@@ -302,6 +302,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 			print("Original:",answer_texts[0])
 			print("Original-raw:",source['answers'])
 		except Exception as e:
+			print("Extracted-raw:",passage_tokens[answer_start:answer_end])
 			print("Original:",answer_texts)
 			print("Original-raw:",source['answers'])
 			a = input("Pause:")
