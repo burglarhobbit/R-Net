@@ -272,14 +272,13 @@ def process_file(filename, data_type, word_counter, char_counter):
 			empty_answers +=1
 			line = fh.readline()
 			continue
-		elif len(answer)>1:
+		elif len(answer)>=1:
 			for i in answer:
 				if i.strip() == "":
 					continue
 				answer_text = i.strip()
 				start_idx, end_idx = lcs_tokens(passage_tokens,word_tokenize(answer_text))
-				extracted_answer = detokenizer.detokenize(passage_tokens[start_idx:end_idx], \
-					return_str=True)
+				extracted_answer = detokenizer.detokenize(passage_tokens[start_idx:end_idx], return_str=True)
 				# ((start_index, end_index)(Fsummary, precision, recall)
 				# (si, ei) > not used from the line below
 				_, fpr_scores = rouge_span([extracted_answer.lower()], [answer_text.lower()])
@@ -295,7 +294,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 				line = fh.readline()
 				continue
 		else:
-			answer_texts = [answer[0].strip()]
+			answer_text = answer[0].strip()
 		print(passage_concat)
 		print("Question:",source['query'])
 		try:
