@@ -471,7 +471,7 @@ def save(filename, obj, message=None):
 			json.dump(obj, fh)
 
 
-def prepro(config):
+def prepro_(config):
 	word_counter, char_counter = Counter(), Counter()
 	train_examples, train_eval = process_file(
 		config.train_file, "train", word_counter, char_counter)

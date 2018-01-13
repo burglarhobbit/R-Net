@@ -122,11 +122,12 @@ def evaluate(eval_file, answer_dict):
 			exact_match_score, prediction, ground_truths)
 		f1 += metric_max_over_ground_truths(f1_score,
 											prediction, ground_truths)
-		_, rouge_l_ += rouge_span(rouge, prediction, ground_truths[0])
+		_, rouge_l = rouge_span(rouge, prediction, ground_truths[0])
+		rouge_l_ = rouge_l[2]
 	exact_match = 100.0 * exact_match / total
 	f1 = 100.0 * f1 / total
-	rouge_l_ = 100.0 * rouge_l_[2] / total
-	return {'exact_match': exact_match, 'f1': f1, 'rouge-l': rouge_l_[2]}
+	rouge_l_ = 100.0 * rouge_l_ / total
+	return {'exact_match': exact_match, 'f1': f1, 'rouge-l': rouge_l_}
 
 
 def normalize_answer(s):
