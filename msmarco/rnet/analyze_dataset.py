@@ -274,7 +274,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 			print("Original:",answer_texts)
 			print("Original-raw:",source['answers'])
 			a = input("Pause:")
-			print("\n\n")
+		print("\n\n")
 		passage_chars = [list(token) for token in passage_tokens]
 		spans = convert_idx(passage_concat, passage_tokens)
 
