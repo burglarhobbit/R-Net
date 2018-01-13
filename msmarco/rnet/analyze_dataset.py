@@ -224,6 +224,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 	highest_rouge_l = 0
 	answer_texts = []
 	answer_start = answer_end = 0
+	extracted_answer_text = ''
 	for i in tqdm(range(total_lines)):
 		source = json.loads(line)
 		passage_concat = ''
@@ -253,6 +254,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 				if fpr_scores[2]>highest_rouge_l:
 					highest_rouge_l = fpr_scores[2]
 					answer_texts = [answer_text]
+					extracted_answer_text = extracted_answer
 					answer_start, answer_end = start_idx, end_idx
 			if highest_rouge_l<0.7:
 				low_rouge_l += 1
