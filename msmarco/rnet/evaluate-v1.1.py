@@ -54,8 +54,8 @@ def rouge_l(rouge_obj, prediction, ground_truth):
 
 	prediction_tokens = normalize_answer(prediction)
 	ground_truth_tokens = normalize_answer(ground_truth)
-	scores = rouge_obj.get_scores(ground_truth_tokens, prediction_tokens)
-	rouge_l_ = scores[0]['rouge-l']['p']
+	scores = rouge_obj.get_scores(prediction_tokens, ground_truth_tokens)
+	rouge_l_ = scores[0]['rouge-l']['r']
 	#print(prediction_tokens)
 	#print(ground_truth_tokens)
 	return rouge_l_
