@@ -228,7 +228,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 	detokenizer = MosesDetokenizer()
 	print("Generating {} examples...".format(data_type))
 	examples = []
-	rouge_metric = 0 # 0 = f, 1 = p, 2 = 2
+	rouge_metric = 1 # 0 = f, 1 = p, 2 = 2
 	eval_examples = {}
 	total = 0
 	rouge = R()
