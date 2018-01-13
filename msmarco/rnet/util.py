@@ -2,6 +2,7 @@ import tensorflow as tf
 import re
 from collections import Counter
 import string
+from rouge_score import rouge_l_sentence_level as rouge_span
 
 def get_record_parser(config, is_test=False):
 	def parse(example):
@@ -121,11 +122,11 @@ def evaluate(eval_file, answer_dict):
 			exact_match_score, prediction, ground_truths)
 		f1 += metric_max_over_ground_truths(f1_score,
 											prediction, ground_truths)
-		rouge_l_ += rouge_l(rouge, prediction, ground_truths[0])
+		_, rouge_l_ += rouge_span(rouge, prediction, ground_truths[0])
 	exact_match = 100.0 * exact_match / total
 	f1 = 100.0 * f1 / total
-	rouge_l_ = 100.0 * rouge_l_ / total
-	return {'exact_match': exact_match, 'f1': f1, 'rouge-l': rouge_l_}
+	rouge_l_ = 100.0 * rouge_l_[2] / total
+	return {'exact_match': exact_match, 'f1': f1, 'rouge-l': rouge_l_[2]}
 
 
 def normalize_answer(s):
