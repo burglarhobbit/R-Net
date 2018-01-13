@@ -218,13 +218,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 
 	total_lines = line_limit
 	#while(line):
-	passage_concat = ''
-	#for pi, p in enumerate(article["paragraphs"]):
-	for passage in source['passages']:
-		passage_concat += passage['passage_text'].replace(
-			"''", '" ').replace("``", '" ')
-	passage_tokens = word_tokenize(passage_concat)
-
+	
 	empty_answers = 0
 	low_rouge_l = 0
 	highest_rouge_l = 0
@@ -232,6 +226,13 @@ def process_file(filename, data_type, word_counter, char_counter):
 	answer_start = answer_end = 0
 	for i in tqdm(range(total_lines)):
 		source = json.loads(line)
+		passage_concat = ''
+		#for pi, p in enumerate(article["paragraphs"]):
+		for passage in source['passages']:
+			passage_concat += passage['passage_text'].replace(
+				"''", '" ').replace("``", '" ')
+		passage_tokens = word_tokenize(passage_concat)
+
 		answer = source['answers']
 		if answer == [] or answer == ['']:
 			empty_answers +=1
