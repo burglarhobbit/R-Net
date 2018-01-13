@@ -281,7 +281,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 				extracted_answer = detokenizer.detokenize(passage_tokens[start_idx:end_idx], return_str=True)
 				# ((start_index, end_index)(Fsummary, precision, recall)
 				# (si, ei) > not used from the line below
-				_, fpr_scores = rouge_span([extracted_answer.lower()], [answer_text.lower()])
+				_, fpr_scores = rouge_span([extracted_answer], [answer_text])
 				print("Recall:",fpr_scores[2])
 				print("Start and end index:",start_idx,",",end_idx)
 				if fpr_scores[2]>highest_rouge_l:
@@ -298,6 +298,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 		print(passage_concat)
 		print("Question:",source['query'])
 		try:
+			print("Passage token length:",len(passage_tokens))
 			print("Extracted:",extracted_answer_text)
 			print("Original:",answer_texts[0])
 			print("Original-raw:",source['answers'])
