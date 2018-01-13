@@ -252,6 +252,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 				# (si, ei) > not used from the line below
 				index,fpr_scores = rouge_span([extracted_answer.lower()], [answer_text.lower()])
 				print("Recall:",fpr_scores[2])
+				print("Start and end index:",start_idx,","end_idx)
 				if fpr_scores[2]>highest_rouge_l:
 					highest_rouge_l = fpr_scores[2]
 					answer_texts = [answer_text]
@@ -268,8 +269,8 @@ def process_file(filename, data_type, word_counter, char_counter):
 		try:
 			print("Extracted:",extracted_answer_text)
 			print("Original:",answer_texts[0],"\n\n")
-		except Exception as e:
 			print("Original-raw:",source['answers'])
+		except Exception as e:
 			a = input("Pause:")
 		passage_chars = [list(token) for token in passage_tokens]
 		spans = convert_idx(passage_concat, passage_tokens)
