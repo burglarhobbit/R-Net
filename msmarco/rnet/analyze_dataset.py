@@ -101,6 +101,38 @@ def lcs_tokens(X,Y):
 	#if answer_start == answer_end:
 	#   answer_end += 1
 	return answer_start,answer_end+1
+"""
+def lcs_tokens(X,Y):
+	m = len(X)
+	n = len(Y)
+	L = [[0 for x in range(n+1)] for x in range(m+1)]
+	for i in range(m+1):
+		for j in range(n+1):
+			if i == 0 or j == 0:
+				L[i][j] = 0
+			elif X[i-1] == Y[j-1]:
+				L[i][j] = L[i-1][j-1] + 1
+			else:
+				L[i][j] = max(L[i-1][j], L[i][j-1])
+	answer_start = 0
+	answer_end = m
+	answer_end_match = False
+	i = m
+	j = n
+	while i > 0 and j > 0:
+		if X[i-1] == Y[j-1]:
+			i-=1
+			j-=1
+			if not answer_end_match:
+				answer_end = i
+				answer_end_match = True
+			answer_start = i
+		elif L[i-1][j] > L[i][j-1]:
+			i-=1
+		else:
+			j-=1
+	return answer_start,answer_end+1
+"""
 
 def _lcs(X, Y, m, n):
 	L = [[0 for x in range(n+1)] for x in range(m+1)]
@@ -222,7 +254,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 	empty_answers = 0
 	low_rouge_l = 0
 	highest_rouge_l = 0
-	for i in tqdm(range(total_lines)):
+	for i in range(total_lines):
 		source = json.loads(line)
 		answer_texts = []
 		answer_start = answer_end = 0
@@ -250,7 +282,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 					return_str=True)
 				# ((start_index, end_index)(Fsummary, precision, recall)
 				# (si, ei) > not used from the line below
-				index,fpr_scores = rouge_span([extracted_answer.lower()], [answer_text.lower()])
+				_, fpr_scores = rouge_span([extracted_answer.lower()], [answer_text.lower()])
 				print("Recall:",fpr_scores[2])
 				print("Start and end index:",start_idx,",",end_idx)
 				if fpr_scores[2]>highest_rouge_l:
