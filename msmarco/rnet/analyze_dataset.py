@@ -228,6 +228,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 	detokenizer = MosesDetokenizer()
 	print("Generating {} examples...".format(data_type))
 	examples = []
+	rouge_metric = 0 # 0 = f, 1 = p, 2 = 2
 	eval_examples = {}
 	total = 0
 	rouge = R()
@@ -282,10 +283,10 @@ def process_file(filename, data_type, word_counter, char_counter):
 				# ((start_index, end_index)(Fsummary, precision, recall)
 				# (si, ei) > not used from the line below
 				_, fpr_scores = rouge_span([extracted_answer], [answer_text])
-				print("Recall:",fpr_scores[2])
+				print("Recall:",fpr_scores[rouge_metric])
 				
-				if fpr_scores[2]>highest_rouge_l:
-					highest_rouge_l = fpr_scores[2]
+				if fpr_scores[rouge_metric]>highest_rouge_l:
+					highest_rouge_l = fpr_scores[rouge_metric]
 					answer_texts = [answer_text]
 					extracted_answer_text = extracted_answer
 					answer_start, answer_end = start_idx, end_idx
@@ -347,6 +348,8 @@ def process_file(filename, data_type, word_counter, char_counter):
 		line = fh.readline()
 	random.shuffle(examples)
 	print("{} questions in total".format(len(examples)))
+	print("{} questions with empty answer").format(empty_answers)
+	print("{} questions with low rouge-l answers").format(low_rouge_l)
 
 	"""
 	# original implementation for comparision purposes
