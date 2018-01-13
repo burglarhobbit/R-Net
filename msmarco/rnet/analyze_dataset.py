@@ -265,9 +265,12 @@ def process_file(filename, data_type, word_counter, char_counter):
 			answer_texts = [answer[0].strip()]
 		print(passage_concat)
 		print("Question:",source['query'])
-		print("Extracted:",extracted_answer_text)
-		print("Original:",answer_texts[0],"\n\n")
-
+		try:
+			print("Extracted:",extracted_answer_text)
+			print("Original:",answer_texts[0],"\n\n")
+		except Exception as e:
+			print("Original-raw:",source['answers'])
+			a = input("Pause:")
 		passage_chars = [list(token) for token in passage_tokens]
 		spans = convert_idx(passage_concat, passage_tokens)
 
