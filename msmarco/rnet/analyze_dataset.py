@@ -263,8 +263,8 @@ def _lcs(X, Y, m, n):
 """
 
 def rouge_l(evaluated_ngrams, reference_ngrams):
-	reference_count = len(reference)
-	evaluated_count = len(evaluated)
+	reference_count = len(reference_ngrams)
+	evaluated_count = len(evaluated_ngrams)
 
 	# Gets the overlapping ngrams between evaluated and reference
 	overlapping_ngrams = evaluated_ngrams.intersection(reference_ngrams)
