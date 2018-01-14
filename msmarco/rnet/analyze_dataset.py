@@ -286,7 +286,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 					answer_start, answer_end = start_idx, end_idx
 			if highest_rouge_l<rouge_l_limit:
 				low_rouge_l += 1
-				print('\nLOW ROUGE - L\n')
+				#print('\nLOW ROUGE - L\n')
 				line = fh.readline()
 				"""
 				print(passage_concat)
