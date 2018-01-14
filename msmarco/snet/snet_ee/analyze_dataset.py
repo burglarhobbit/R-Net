@@ -7,7 +7,6 @@ from collections import Counter
 import numpy as np
 from nltk.tokenize.moses import MosesDetokenizer
 from rouge import Rouge as R
-from rouge_score import rouge_l_sentence_level as rouge_span
 
 nlp = spacy.blank("en")
 
