@@ -73,11 +73,13 @@ def lcs_tokens(X,Y):
 	
 	# Start from the right-most-bottom-most corner and
 	# one by one store characters in lcs[]
+	index = []
 	i = m
 	j = n
 	while i > 0 and j > 0:
 		if (X[i-1] == Y[j-1]) and (X[i-1] not in ignore_tokens):
 			print(X[i-1],":",i-1)
+			index.append(i-1)
 			i-=1
 			j-=1
 			if not answer_start_match:
@@ -91,7 +93,7 @@ def lcs_tokens(X,Y):
 			i-=1
 		else:
 			j-=1
-
+	"""
 	i = answer_start_i-1
 	j = answer_start_j-1
 	answer_end = i
@@ -111,8 +113,9 @@ def lcs_tokens(X,Y):
 			i+=1
 		else:
 			j+=1
+	"""
 	print(answer_start_match, answer_end_match)
-	return answer_start_i,answer_end+1
+	return index
 """
 def lcs_tokens(X,Y):
 	m = len(X)
@@ -308,7 +311,8 @@ def process_file(filename, data_type, word_counter, char_counter):
 				answer_text = i.strip().lower()
 				answer_text = answer_text[:-1] if answer_text[-1] == "." else answer_text
 				answer_token = word_tokenize(answer_text)
-				start_idx, end_idx = lcs_tokens(passage_tokens, answer_token)
+				index = lcs_tokens(passage_tokens, answer_token)
+				start_idx, end_idx = index[0], index[-1]
 				print("\n\nStart index:{} End index:{}".format(start_idx,end_idx))
 				extracted_answer = detokenizer.detokenize(passage_tokens[start_idx:end_idx], return_str=True)
 				detoken_ref_answer = detokenizer.detokenize(answer_token, return_str=True)
