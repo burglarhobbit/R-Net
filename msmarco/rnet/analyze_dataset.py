@@ -215,7 +215,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 	rouge = R()
 	fh = open(filename, "r")
 	line = fh.readline()
-	line_limit = 1000
+	line_limit = 500
 	if data_type == "train":
 		total_lines = 82326 # ms marco training data set lines
 	elif data_type == "dev":
