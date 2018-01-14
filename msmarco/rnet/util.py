@@ -85,6 +85,7 @@ def convert_tokens(eval_file, qa_id, pp1, pp2):
 			outlier = True
 			p1 = p1%spans_l
 			p2 = p1%spans_l
+			print("outlier")
 			#continue
 			# it will return {},{},True
 			#return answer_dict,remapped_dict,outlier
