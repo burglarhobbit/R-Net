@@ -299,7 +299,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 			for i in answer:
 				if i.strip() == "":
 					continue
-				answer_text = i.strip()
+				answer_text = i.strip().lower()
 				answer_text = answer_text[:-1] if answer_text[-1] == "." else answer_text
 
 				start_idx, end_idx = lcs_tokens(passage_tokens,word_tokenize(answer_text))
@@ -359,7 +359,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 			for char in token:
 				char_counter[char] += 1
 		ques = source['query'].replace(
-			"''", '" ').replace("``", '" ')
+			"''", '" ').replace("``", '" ').lower()
 		ques_tokens = word_tokenize(ques)
 		ques_chars = [list(token) for token in ques_tokens]
 		for token in ques_tokens:
