@@ -358,7 +358,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 
 					print("Recall:",fpr_scores[rouge_metric])
 				except Exception as e:
-					print("Exception:",e.printstacktrace())
+					print("Exception:")
 					#pass
 				if fpr_scores[rouge_metric]>highest_rouge_l:
 					highest_rouge_l = fpr_scores[rouge_metric]
