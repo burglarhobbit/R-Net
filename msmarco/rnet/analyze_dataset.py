@@ -87,8 +87,8 @@ def lcs_tokens(X,Y):
 		else:
 			j-=1
 
-	i = answer_start_i
-	j = answer_start_j
+	i = answer_start_i-1
+	j = answer_start_j-1
 	answer_end = i
 	while i < m-1 and j < n-1:
 		if X[i+1] == Y[j+1]:
