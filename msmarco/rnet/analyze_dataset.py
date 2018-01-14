@@ -275,10 +275,10 @@ def process_file(filename, data_type, word_counter, char_counter):
 					fpr_scores = rouge_l(extracted_answer, detoken_ref_answer)
 
 					#print("Recall:",fpr_scores[rouge_metric])
-				except Exception as e:
-					print(e)
-					print(index)
-					#pass
+				except Exception as e: # for yes/no type questions, index = []
+					#print(e)
+					#print(index)
+					pass
 				if fpr_scores[rouge_metric]>highest_rouge_l:
 					highest_rouge_l = fpr_scores[rouge_metric]
 					answer_texts = [detoken_ref_answer]
