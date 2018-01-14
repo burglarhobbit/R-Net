@@ -263,6 +263,8 @@ def _lcs(X, Y, m, n):
 """
 
 def rouge_l(evaluated_ngrams, reference_ngrams):
+	evaluated_ngrams = set(evaluated_ngrams)
+	reference_ngrams = set(reference_ngrams)
 	reference_count = len(reference_ngrams)
 	evaluated_count = len(evaluated_ngrams)
 
