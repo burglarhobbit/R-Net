@@ -332,15 +332,21 @@ def process_file(filename, data_type, word_counter, char_counter):
 			if highest_rouge_l<0.7:
 				low_rouge_l += 1
 				print('\nLOW ROUGE - L\n')
-				print(passage_concat)
-				print("Question:",source['query'])
-				print("Start and end index:",answer_start,",",answer_end)
-				print("Passage token length:",len(passage_tokens))
-				print("Extracted:",extracted_answer_text)
-				print("Ground truth:",answer_texts[0])
-				print("Ground truth-raw:",source['answers'])
 				line = fh.readline()
 				print("\n\n")
+				print(passage_concat)
+				print("Question:",source['query'])
+				try:
+					print("Start and end index:",answer_start,",",answer_end)
+					print("Passage token length:",len(passage_tokens))
+					print("Extracted:",extracted_answer_text)
+					print("Ground truth:",answer_texts[0])
+					print("Ground truth-raw:",source['answers'])
+				except Exception as e:
+					print("Extracted-raw:",passage_tokens[answer_start:answer_end])
+					print("Ground truth:",answer_texts)
+					print("Ground truth-raw:",source['answers'])
+					a = input("Pause:")
 				continue
 		else:
 			answer_text = answer[0].strip()
