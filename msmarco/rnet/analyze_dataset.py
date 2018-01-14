@@ -287,7 +287,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 		#for pi, p in enumerate(article["paragraphs"]):
 		for passage in source['passages']:
 			passage_concat += " " + passage['passage_text'].replace(
-				"''", '" ').replace("``", '" ')..replace(":"," ")lower()
+				"''", '" ').replace("``", '" ').lower()
 		passage_tokens = word_tokenize(passage_concbar-le-ducat)
 
 		answer = source['answers']
