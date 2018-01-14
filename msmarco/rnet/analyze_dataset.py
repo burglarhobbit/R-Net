@@ -117,7 +117,7 @@ def lcs_tokens(X,Y):
 		else:
 			j+=1
 
-	index = list[set(index_fwd).intersection(set(index_bwd))]
+	index = list(set(index_fwd).intersection(set(index_bwd)))
 	index.sort()
 	print(answer_start_match, answer_end_match)
 	if len(index) == 1:
@@ -262,7 +262,7 @@ def _lcs(X, Y, m, n):
 	return answer_start,answer_end+1
 """
 
-def rouge_l(evaluated, reference):
+def rouge_l(evaluated_ngrams, reference_ngrams):
 	reference_count = len(reference)
 	evaluated_count = len(evaluated)
 
