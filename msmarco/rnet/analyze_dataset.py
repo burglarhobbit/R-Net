@@ -90,7 +90,8 @@ def lcs_tokens(X,Y):
 			#if not answer_end_match:
 			#	answer_end = i
 			#	answer_end_match = True
-			answer_start = (i,j)
+			answer_start_i = i,
+			answer_start_j = j
 	
 		# If not same, then find the larger of two and
 		# go in the direction of larger value
@@ -98,10 +99,10 @@ def lcs_tokens(X,Y):
 			i-=1
 		else:
 			j-=1
-	
-	i = answer_start[0]
-	j = answer_start[1]
-	while i < m and j < n:
+
+	i = answer_start_i
+	j = answer_start_j
+	while i < m-1 and j < n-1:
 	
 		# If current character in X[] and Y are same, then
 		# current character is part of LCS
@@ -157,13 +158,13 @@ def lcs_tokens(X,Y):
 			i-=1
 		else:
 			j-=1
-	i = 0
-	j = 0
+	i = answer_start[0]
+	j = answer_start[1]
 	while i < m and j < n:	
-		if X[i] == Y[j]:
-			answer_end = i
+		if X[i+] == Y[j+1]:
 			i+=1
 			j+=1
+			answer_end = i
 		elif L[i+1][j] > L[i][j+1]:
 			i+=1
 		else:
