@@ -354,7 +354,8 @@ def process_file(filename, data_type, word_counter, char_counter):
 					# ((start_index, end_index)(Fsummary, precision, recall)
 					# (si, ei) > not used from the line below
 					#_, fpr_scores = rouge_span([extracted_answer], [detoken_ref_answer])
-					fpr_scores = rouge_span(extracted_answer, detoken_ref_answer)
+					fpr_scores = rouge_l(extracted_answer, detoken_ref_answer)
+
 					print("Recall:",fpr_scores[rouge_metric])
 				except Exception as e:
 					pass
