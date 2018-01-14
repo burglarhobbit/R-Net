@@ -2,6 +2,13 @@ import tensorflow as tf
 import re
 from collections import Counter
 import string
+from rouge_score import rouge_l_sentence_level as rouge_span
+import spacy
+
+def word_tokenize(sent):
+	nlp = spacy.blank("en")
+	doc = nlp(sent)
+	return [token.text for token in doc]
 
 def get_record_parser(config, is_test=False):
 	def parse(example):
@@ -69,6 +76,7 @@ def convert_tokens(eval_file, qa_id, pp1, pp2):
 	answer_dict = {}
 	remapped_dict = {}
 	outlier = False
+	print(outlier)
 	for qid, p1, p2 in zip(qa_id, pp1, pp2):
 		passage_concat = eval_file[str(qid)]["passage_concat"]
 		spans = eval_file[str(qid)]["spans"]
@@ -78,6 +86,7 @@ def convert_tokens(eval_file, qa_id, pp1, pp2):
 			outlier = True
 			p1 = p1%spans_l
 			p2 = p1%spans_l
+			print("outlier")
 			#continue
 			# it will return {},{},True
 			#return answer_dict,remapped_dict,outlier
@@ -97,21 +106,44 @@ def convert_tokens(eval_file, qa_id, pp1, pp2):
 		remapped_dict[uuid] = passage_concat[start_idx: end_idx]
 	return answer_dict, remapped_dict, outlier
 
-def rouge_l(rouge_obj, prediction, ground_truth):
+def rouge_l(evaluated_ngrams, reference_ngrams):
+	evaluated_ngrams = set(evaluated_ngrams)
+	reference_ngrams = set(reference_ngrams)
+	reference_count = len(reference_ngrams)
+	evaluated_count = len(evaluated_ngrams)
 
-	prediction_tokens = normalize_answer(prediction)
-	ground_truth_tokens = normalize_answer(ground_truth)
-	scores = rouge_obj.get_scores(prediction_tokens, ground_truth_tokens)
-	rouge_l_ = scores[0]['rouge-l']['r']
+	# Gets the overlapping ngrams between evaluated and reference
+	overlapping_ngrams = evaluated_ngrams.intersection(reference_ngrams)
+	overlapping_count = len(overlapping_ngrams)
+
+	# Handle edge case. This isn't mathematically correct, but it's good enough
+	if evaluated_count == 0:
+		precision = 0.0
+	else:
+		precision = overlapping_count / evaluated_count
+	  
+	if reference_count == 0:
+		recall = 0.0 
+	else:
+		recall = overlapping_count / reference_count
+	  
+	f1_score = 2.0 * ((precision * recall) / (precision + recall + 1e-8))
+
+	# return overlapping_count / reference_count
+	return f1_score, precision, recall
+
+def rouge_get_scores(prediction, ground_truth):
+
+	prediction_tokens = word_tokenize(normalize_answer(prediction))
+	ground_truth_tokens = word_tokenize(normalize_answer(ground_truth))
+	scores = rouge_l(prediction_tokens, ground_truth_tokens)
 	#print(prediction_tokens)
 	#print(ground_truth_tokens)
-	return rouge_l_
+	return scores
 
 def evaluate(eval_file, answer_dict):
-	from rouge import Rouge
 	
-	f1 = exact_match = rouge_l_= total = 0
-	rouge = Rouge()
+	f1 = exact_match = rouge_l_f = rouge_l_p = rouge_l_r = total = 0
 
 	for key, value in answer_dict.items():
 		total += 1
@@ -121,11 +153,17 @@ def evaluate(eval_file, answer_dict):
 			exact_match_score, prediction, ground_truths)
 		f1 += metric_max_over_ground_truths(f1_score,
 											prediction, ground_truths)
-		rouge_l_ += rouge_l(rouge, prediction, ground_truths[0])
+		rouge_l = rouge_get_scores(prediction, ground_truths[0])
+		rouge_l_f = rouge_l[0]
+		rouge_l_p = rouge_l[1]
+		rouge_l_r = rouge_l[2]
 	exact_match = 100.0 * exact_match / total
 	f1 = 100.0 * f1 / total
-	rouge_l_ = 100.0 * rouge_l_ / total
-	return {'exact_match': exact_match, 'f1': f1, 'rouge-l': rouge_l_}
+	rouge_l_f = 100.0 * rouge_l_f / total
+	rouge_l_p = 100.0 * rouge_l_p / total
+	rouge_l_r = 100.0 * rouge_l_r / total
+	return {'exact_match': exact_match, 'f1': f1, 'rouge-l-r': rouge_l_r, 'rouge-l-p': rouge_l_p,
+			'rouge-l-f': rouge_l_f}
 
 
 def normalize_answer(s):
@@ -144,6 +182,7 @@ def normalize_answer(s):
 		return text.lower()
 
 	return white_space_fix(remove_articles(remove_punc(lower(s))))
+	#return lower(s)
 
 def f1_score(prediction, ground_truth):
 	prediction_tokens = normalize_answer(prediction).split()
