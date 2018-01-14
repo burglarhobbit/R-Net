@@ -68,6 +68,7 @@ def lcs_tokens(X,Y):
 	answer_start = 0
 	answer_end = m
 	answer_end_match = False
+	answer_start_match = False
 
 	# Create a character array to store the lcs string
 	#lcs = [""] * (index+1)
@@ -86,9 +87,9 @@ def lcs_tokens(X,Y):
 			i-=1
 			j-=1
 			#index-=1
-			if not answer_end_match:
-				answer_end = i
-				answer_end_match = True
+			#if not answer_end_match:
+			#	answer_end = i
+			#	answer_end_match = True
 			answer_start = i
 	
 		# If not same, then find the larger of two and
@@ -97,6 +98,29 @@ def lcs_tokens(X,Y):
 			i-=1
 		else:
 			j-=1
+	i = 0
+	j = 0
+	while i < m and j < n:
+	
+		# If current character in X[] and Y are same, then
+		# current character is part of LCS
+		if X[i] == Y[j]:
+			#lcs[index-1] = X[i-1]
+			answer_end = i
+
+			i+=1
+			j+=1
+			#index-=1
+			#if not answer_start_match:
+			#	answer_start = i
+			#	answer_end_match = True
+			
+		# If not same, then find the larger of two and
+		# go in the direction of larger value
+		elif L[i+1][j] > L[i][j+1]:
+			i+=1
+		else:
+			j+=1
 	#print "LCS of " + X + " and " + Y + " is " + "".join(lcs)
 	#if answer_start == answer_end:
 	#   answer_end += 1
@@ -229,6 +253,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 	print("Generating {} examples...".format(data_type))
 	examples = []
 	rouge_metric = 2 # 0 = f, 1 = p, 2 = r
+	remove_tokens = ["'",'"','.',',','']
 	eval_examples = {}
 	total = 0
 	rouge = R()
