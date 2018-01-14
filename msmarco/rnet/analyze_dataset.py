@@ -29,9 +29,7 @@ def convert_idx(text, tokens):
 	return spans
 
 # Dynamic programming implementation of LCS problem
- 
 # Returns length of LCS for X[0..m-1], Y[0..n-1] 
-
 # Driver program
 """
 X = "AGGTAB"
@@ -123,55 +121,6 @@ def lcs_tokens(X,Y):
 		index = index * 2
 	#	index[1] += 1
 	return index
-"""
-def lcs_tokens(X,Y):
-	m = len(X)
-	n = len(Y)
-	L = [[0 for x in range(n+1)] for x in range(m+1)] 
-	for i in range(m+1):
-		for j in range(n+1):
-			if i == 0 or j == 0:
-				L[i][j] = 0
-			elif X[i-1] == Y[j-1]:
-				L[i][j] = L[i-1][j-1] + 1
-			else:
-				L[i][j] = max(L[i-1][j], L[i][j-1])
-	answer_start = answer_start_i = answer_start_j = 0
-	answer_end = m-1
-	answer_end_match = False
-	answer_start_match = False
-	i = m
-	j = n
-	while i > 0 and j > 0:
-		if X[i-1] == Y[j-1]:
-			i-=1
-			j-=1
-			if not answer_start_match:
-				answer_start_match = True
-			answer_start_i = i
-			answer_start_j = j
-		elif L[i-1][j] > L[i][j-1]:
-			i-=1
-		else:
-			j-=1
-	i = answer_start_i
-	j = answer_start_j
-	answer_end = i
-	while i < m-1 and j < n-1:
-		if X[i+1] == Y[j+1]:
-			i+=1
-			j+=1
-			answer_end = i
-			if not answer_end_match:
-				#answer_start = i
-				answer_end_match = True
-		elif L[i+1][j] > L[i][j+1]:
-			i+=1
-		else:
-			j+=1
-	print(answer_start_match, answer_end_match)
-	return answer_start_i,answer_end+1
-"""
 
 def _lcs(X, Y, m, n):
 	L = [[0 for x in range(n+1)] for x in range(m+1)]
@@ -227,39 +176,6 @@ def _lcs(X, Y, m, n):
 	#if answer_start == answer_end:
 	#   answer_end += 1
 	return answer_start,answer_end+1
-"""
-def _lcs(X, Y, m, n):
-	L = [[0 for x in range(n+1)] for x in range(m+1)]
-	for i in range(m+1):
-		for j in range(n+1):
-			if i == 0 or j == 0:
-				L[i][j] = 0
-			elif X[i-1] == Y[j-1]:
-				L[i][j] = L[i-1][j-1] + 1
-			else:
-				L[i][j] = max(L[i-1][j], L[i][j-1])
-	answer_start = 0
-	answer_end = m
-	answer_end_match = False
-	i = m
-	j = n
-	while i > 0 and j > 0:
-	
-		if X[i-1] == Y[j-1]:
-			#lcs[index-1] = X[i-1]
-			i-=1
-			j-=1
-			#index-=1
-			if not answer_end_match:
-				answer_end = i
-				answer_end_match = True
-			answer_start = i
-		elif L[i-1][j] > L[i][j-1]:
-			i-=1
-		else:
-			j-=1
-	return answer_start,answer_end+1
-"""
 
 def rouge_l(evaluated_ngrams, reference_ngrams):
 	evaluated_ngrams = set(evaluated_ngrams)
@@ -298,7 +214,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 	rouge = R()
 	fh = open(filename, "r")
 	line = fh.readline()
-	line_limit = 300
+	line_limit = 1000
 	if data_type == "train":
 		total_lines = 82326 # ms marco training data set lines
 	elif data_type == "dev":
@@ -313,7 +229,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 		for _ in range(skip):
 			next(fh)
 
-	#total_lines = line_limit
+	total_lines = line_limit
 	#while(line):
 	
 	empty_answers = 0
@@ -349,7 +265,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 				fpr_scores = (0,0,0)
 				try:
 					start_idx, end_idx = index[0], index[-1]+1
-					print("\n\nStart index:{} End index:{}".format(start_idx,end_idx))
+					#print("\n\nStart index:{} End index:{}".format(start_idx,end_idx))
 					extracted_answer = detokenizer.detokenize(passage_tokens[start_idx:end_idx], return_str=True)
 					detoken_ref_answer = detokenizer.detokenize(answer_token, return_str=True)
 					# ((start_index, end_index)(Fsummary, precision, recall)
@@ -370,6 +286,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 				low_rouge_l += 1
 				print('\nLOW ROUGE - L\n')
 				line = fh.readline()
+				"""
 				print(passage_concat)
 				print("Question:",source['query'])
 				try:
@@ -384,9 +301,11 @@ def process_file(filename, data_type, word_counter, char_counter):
 					print("Ground truth-raw:",source['answers'])
 					a = input("Pause:")
 					print("\n\n")
+				"""
 				continue
 		else:
 			answer_text = answer[0].strip()
+		"""
 		print(passage_concat)
 		print("Question:",source['query'])
 		try:
@@ -401,6 +320,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 			print("Ground truth-raw:",source['answers'])
 			a = input("Pause:")
 		print("\n\n")
+		"""
 		passage_chars = [list(token) for token in passage_tokens]
 		spans = convert_idx(passage_concat, passage_tokens)
 

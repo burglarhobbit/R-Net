@@ -108,7 +108,7 @@ flags.DEFINE_integer("checkpoint", 1000,
 flags.DEFINE_integer("period", 100, "period to save batch loss")
 flags.DEFINE_integer("val_num_batches", 150,
                      "Number of batches to evaluate the model")
-flags.DEFINE_float("init_lr", 0.5, "Initial learning rate for Adadelta")
+flags.DEFINE_float("init_lr", 1.0, "Initial learning rate for Adadelta")
 flags.DEFINE_float("keep_prob", 0.9, "Dropout keep prob in rnn") #0.7
 flags.DEFINE_float("ptr_keep_prob", 0.9, "Dropout keep prob for pointer network") #0.7
 flags.DEFINE_float("grad_clip", 5.0, "Global Norm gradient clipping rate")
