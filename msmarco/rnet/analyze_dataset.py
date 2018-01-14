@@ -317,15 +317,18 @@ def process_file(filename, data_type, word_counter, char_counter):
 				answer_token = word_tokenize(answer_text)
 				index = lcs_tokens(passage_tokens, answer_token)
 				print(index)
-				start_idx, end_idx = index[0], index[-1]+1
-				print("\n\nStart index:{} End index:{}".format(start_idx,end_idx))
-				extracted_answer = detokenizer.detokenize(passage_tokens[start_idx:end_idx], return_str=True)
-				detoken_ref_answer = detokenizer.detokenize(answer_token, return_str=True)
-				# ((start_index, end_index)(Fsummary, precision, recall)
-				# (si, ei) > not used from the line below
-				_, fpr_scores = rouge_span([extracted_answer], [detoken_ref_answer])
-				print("Recall:",fpr_scores[rouge_metric])
-				
+
+				try:
+					start_idx, end_idx = index[0], index[-1]+1
+					print("\n\nStart index:{} End index:{}".format(start_idx,end_idx))
+					extracted_answer = detokenizer.detokenize(passage_tokens[start_idx:end_idx], return_str=True)
+					detoken_ref_answer = detokenizer.detokenize(answer_token, return_str=True)
+					# ((start_index, end_index)(Fsummary, precision, recall)
+					# (si, ei) > not used from the line below
+					_, fpr_scores = rouge_span([extracted_answer], [detoken_ref_answer])
+					print("Recall:",fpr_scores[rouge_metric])
+				except Exception as e:
+					pass
 				if fpr_scores[rouge_metric]>highest_rouge_l:
 					highest_rouge_l = fpr_scores[rouge_metric]
 					answer_texts = [detoken_ref_answer]
