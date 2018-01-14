@@ -66,7 +66,7 @@ def lcs_tokens(X,Y):
 
 	# initialized answer start and end index
 	answer_start = answer_start_i = answer_start_j = 0
-	answer_end = m
+	answer_end = m-1
 	answer_end_match = False
 	answer_start_match = False
 
@@ -100,8 +100,8 @@ def lcs_tokens(X,Y):
 		else:
 			j-=1
 
-	i = answer_start_i
-	j = answer_start_j
+	i = answer_start_i-1
+	j = answer_start_j-1
 	while i < m-1 and j < n-1:
 	
 		# If current character in X[] and Y are same, then
@@ -114,9 +114,9 @@ def lcs_tokens(X,Y):
 			answer_end = i
 
 			#index-=1
-			#if not answer_start_match:
-			#	answer_start = i
-			#	answer_end_match = True
+			if not answer_end_match:
+				#answer_start = i
+				answer_end_match = True
 
 		# If not same, then find the larger of two and
 		# go in the direction of larger value
@@ -132,7 +132,7 @@ def lcs_tokens(X,Y):
 def lcs_tokens(X,Y):
 	m = len(X)
 	n = len(Y)
-	L = [[0 for x in range(n+1)] for x in range(m+1)]
+	L = [[0 for x in range(n+1)] for x in range(m+1)] 
 	for i in range(m+1):
 		for j in range(n+1):
 			if i == 0 or j == 0:
@@ -141,26 +141,25 @@ def lcs_tokens(X,Y):
 				L[i][j] = L[i-1][j-1] + 1
 			else:
 				L[i][j] = max(L[i-1][j], L[i][j-1])
-	answer_start = 0
+	answer_start = answer_start_i = answer_start_j = 0
 	answer_end = m
 	answer_end_match = False
+	answer_start_match = False
 	i = m
 	j = n
 	while i > 0 and j > 0:
 		if X[i-1] == Y[j-1]:
 			i-=1
 			j-=1
-			#if not answer_end_match:
-			#	answer_end = i
-			#	answer_end_match = True
-			answer_start = i
+			answer_start_i = i
+			answer_start_j = j
 		elif L[i-1][j] > L[i][j-1]:
 			i-=1
 		else:
 			j-=1
-	i = answer_start[0]
-	j = answer_start[1]
-	while i < m-1 and j < n-1:	
+	i = answer_start_i-1
+	j = answer_start_j-1
+	while i < m-1 and j < n-1:
 		if X[i+1] == Y[j+1]:
 			i+=1
 			j+=1
@@ -169,7 +168,7 @@ def lcs_tokens(X,Y):
 			i+=1
 		else:
 			j+=1
-	return answer_start,answer_end+1
+	return answer_start_i,answer_end+1
 """
 
 def _lcs(X, Y, m, n):
@@ -237,20 +236,18 @@ def _lcs(X, Y, m, n):
 				L[i][j] = L[i-1][j-1] + 1
 			else:
 				L[i][j] = max(L[i-1][j], L[i][j-1])
-	index = L[m][n]
 	answer_start = 0
-	answer_end = len(X)
+	answer_end = m
 	answer_end_match = False
-	lcs = [""] * (index+1)
-	lcs[index] = "\0"   
 	i = m
 	j = n
-	while i > 0 and j > 0:  
+	while i > 0 and j > 0:
+	
 		if X[i-1] == Y[j-1]:
-			lcs[index-1] = X[i-1]
+			#lcs[index-1] = X[i-1]
 			i-=1
 			j-=1
-			index-=1
+			#index-=1
 			if not answer_end_match:
 				answer_end = i
 				answer_end_match = True
@@ -333,7 +330,6 @@ def process_file(filename, data_type, word_counter, char_counter):
 				low_rouge_l += 1
 				print('\nLOW ROUGE - L\n')
 				line = fh.readline()
-				print("\n\n")
 				print(passage_concat)
 				print("Question:",source['query'])
 				try:
@@ -347,6 +343,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 					print("Ground truth:",answer_texts)
 					print("Ground truth-raw:",source['answers'])
 					a = input("Pause:")
+					print("\n\n")
 				continue
 		else:
 			answer_text = answer[0].strip()
