@@ -101,7 +101,7 @@ def lcs_tokens(X,Y):
 			j-=1
 
 	i = answer_start_i-1
-	j = answer_start_j-1
+	j = 0
 	while i < m-1 and j < n-1:
 	
 		# If current character in X[] and Y are same, then
@@ -158,7 +158,7 @@ def lcs_tokens(X,Y):
 		else:
 			j-=1
 	i = answer_start_i-1
-	j = answer_start_j-1
+	j = 0
 	while i < m-1 and j < n-1:
 		if X[i+1] == Y[j+1]:
 			i+=1
