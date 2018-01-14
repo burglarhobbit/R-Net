@@ -118,7 +118,7 @@ def lcs_tokens(X,Y):
 	index.reverse()
 	if len(index) == 1:
 		index = index * 2
-		index[1] += 1
+	#	index[1] += 1
 	return index
 """
 def lcs_tokens(X,Y):
@@ -317,7 +317,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 				answer_token = word_tokenize(answer_text)
 				index = lcs_tokens(passage_tokens, answer_token)
 				print(index)
-				start_idx, end_idx = index[0], index[-1]
+				start_idx, end_idx = index[0], index[-1]+1
 				print("\n\nStart index:{} End index:{}".format(start_idx,end_idx))
 				extracted_answer = detokenizer.detokenize(passage_tokens[start_idx:end_idx], return_str=True)
 				detoken_ref_answer = detokenizer.detokenize(answer_token, return_str=True)
