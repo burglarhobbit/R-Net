@@ -313,7 +313,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 				
 				if fpr_scores[rouge_metric]>highest_rouge_l:
 					highest_rouge_l = fpr_scores[rouge_metric]
-					answer_texts = [answer_text]
+					answer_texts = [detoken_ref_answer]
 					extracted_answer_text = extracted_answer
 					answer_start, answer_end = start_idx, end_idx
 			if highest_rouge_l<0.7:
