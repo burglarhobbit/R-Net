@@ -3,6 +3,7 @@ import tensorflow as tf
 from base64 import b64decode as bd
 
 from prepro_msm import prepro
+from analyze_dataset import prepro_
 from main import train, test
 
 
@@ -123,6 +124,8 @@ def main(_):
         train(config)
     elif config.mode == "prepro":
         prepro(config)
+    elif config.mode == "analyze":
+        prepro_(config)
     elif config.mode == "debug":
         config.num_steps = 2
         config.val_num_batches = 1
