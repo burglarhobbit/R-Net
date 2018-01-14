@@ -159,7 +159,7 @@ def evaluate(eval_file, answer_dict):
 	rouge_l_f = 100.0 * rouge_l_f / total
 	rouge_l_p = 100.0 * rouge_l_p / total
 	rouge_l_r = 100.0 * rouge_l_r / total
-	return {'exact_match': exact_match, 'f1': f1, 'rouge-l-r': rouge_l_r, 'rouge-l-p': rouge_l_p
+	return {'exact_match': exact_match, 'f1': f1, 'rouge-l-r': rouge_l_r, 'rouge-l-p': rouge_l_p,
 			'rouge-l-f': rouge_l_f}
 
 
