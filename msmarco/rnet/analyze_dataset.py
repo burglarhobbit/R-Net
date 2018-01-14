@@ -315,6 +315,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 					continue
 				answer_text = i.strip()
 				start_idx, end_idx = lcs_tokens(passage_tokens,word_tokenize(answer_text))
+				print("Start index:{} End index:{}".format(start_index,end_idx))
 				extracted_answer = detokenizer.detokenize(passage_tokens[start_idx:end_idx], return_str=True)
 				# ((start_index, end_index)(Fsummary, precision, recall)
 				# (si, ei) > not used from the line below
