@@ -29,7 +29,7 @@ glove_file = os.path.join(path, "snetP_data", "data", "glove", "glove.840B.300d.
 #target_dir = os.path.join(hdd2, "snetP_data", "snet_data")
 
 #target_dir = "data"
-target_dir = os.path.join(path, "snetP_data", "rnet", "msmarco", "new")
+target_dir = os.path.join(path, "snetP_data", "rnet", "msmarco")
 log_dir = os.path.join(path, "snetP_data", "rnet", "msmarco", "log", "event")
 save_dir = os.path.join(path, "snetP_data", "rnet", "msmarco", "log", "model")
 answer_dir = os.path.join(path, "snetP_data", "rnet", "msmarco","log", "answer")
