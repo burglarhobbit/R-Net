@@ -2,7 +2,6 @@ import tensorflow as tf
 import re
 from collections import Counter
 import string
-from rouge_score import rouge_l_sentence_level as rouge_span
 import spacy
 
 def word_tokenize(sent):
