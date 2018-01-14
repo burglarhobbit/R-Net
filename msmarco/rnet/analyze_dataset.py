@@ -90,7 +90,7 @@ def lcs_tokens(X,Y):
 			#if not answer_end_match:
 			#	answer_end = i
 			#	answer_end_match = True
-			answer_start = i
+			answer_start = (i,j)
 	
 		# If not same, then find the larger of two and
 		# go in the direction of larger value
@@ -98,18 +98,20 @@ def lcs_tokens(X,Y):
 			i-=1
 		else:
 			j-=1
-	i = 0
-	j = 0
+	
+	i = answer_start[0]
+	j = answer_start[1]
 	while i < m and j < n:
 	
 		# If current character in X[] and Y are same, then
 		# current character is part of LCS
-		if X[i] == Y[j]:
+		if X[i+1] == Y[j+1]:
+			i+=1
+			j+=1
+
 			#lcs[index-1] = X[i-1]
 			answer_end = i
 
-			i+=1
-			j+=1
 			#index-=1
 			#if not answer_start_match:
 			#	answer_start = i
@@ -117,7 +119,7 @@ def lcs_tokens(X,Y):
 
 		# If not same, then find the larger of two and
 		# go in the direction of larger value
-		elif L[i+1][j] < L[i][j+1]:
+		elif L[i+1][j] > L[i][j+1]:
 			i+=1
 		else:
 			j+=1
@@ -147,14 +149,25 @@ def lcs_tokens(X,Y):
 		if X[i-1] == Y[j-1]:
 			i-=1
 			j-=1
-			if not answer_end_match:
-				answer_end = i
-				answer_end_match = True
+			#if not answer_end_match:
+			#	answer_end = i
+			#	answer_end_match = True
 			answer_start = i
 		elif L[i-1][j] > L[i][j-1]:
 			i-=1
 		else:
 			j-=1
+	i = 0
+	j = 0
+	while i < m and j < n:	
+		if X[i] == Y[j]:
+			answer_end = i
+			i+=1
+			j+=1
+		elif L[i+1][j] > L[i][j+1]:
+			i+=1
+		else:
+			j+=1
 	return answer_start,answer_end+1
 """
 
@@ -318,6 +331,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 			if highest_rouge_l<0.7:
 				low_rouge_l += 1
 				line = fh.readline()
+				print("\n\n")
 				continue
 		else:
 			answer_text = answer[0].strip()
