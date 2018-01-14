@@ -114,10 +114,10 @@ def lcs_tokens(X,Y):
 			#if not answer_start_match:
 			#	answer_start = i
 			#	answer_end_match = True
-			
+
 		# If not same, then find the larger of two and
 		# go in the direction of larger value
-		elif L[i+1][j] > L[i][j+1]:
+		elif L[i+1][j] < L[i][j+1]:
 			i+=1
 		else:
 			j+=1
