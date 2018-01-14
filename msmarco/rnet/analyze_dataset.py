@@ -100,8 +100,8 @@ def lcs_tokens(X,Y):
 		else:
 			j-=1
 
-	i = answer_start_i-1
-	j = 0
+	i = answer_start_i
+	j = answer_start_j
 	while i < m-1 and j < n-1:
 	
 		# If current character in X[] and Y are same, then
@@ -125,7 +125,6 @@ def lcs_tokens(X,Y):
 		else:
 			j+=1
 	#print "LCS of " + X + " and " + Y + " is " + "".join(lcs)
-	#if answer_start == answer_end:
 	#   answer_end += 1
 	return answer_start_i,answer_end+1
 """
@@ -142,7 +141,7 @@ def lcs_tokens(X,Y):
 			else:
 				L[i][j] = max(L[i-1][j], L[i][j-1])
 	answer_start = answer_start_i = answer_start_j = 0
-	answer_end = m
+	answer_end = m-1
 	answer_end_match = False
 	answer_start_match = False
 	i = m
@@ -157,13 +156,15 @@ def lcs_tokens(X,Y):
 			i-=1
 		else:
 			j-=1
-	i = answer_start_i-1
-	j = 0
+	i = answer_start_i
+	j = answer_start_j
 	while i < m-1 and j < n-1:
 		if X[i+1] == Y[j+1]:
 			i+=1
 			j+=1
 			answer_end = i
+			if not answer_end_match:
+				answer_end_match = True
 		elif L[i+1][j] > L[i][j+1]:
 			i+=1
 		else:
@@ -315,7 +316,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 					continue
 				answer_text = i.strip()
 				start_idx, end_idx = lcs_tokens(passage_tokens,word_tokenize(answer_text))
-				print("Start index:{} End index:{}".format(start_idx,end_idx))
+				print("\n\nStart index:{} End index:{}".format(start_idx,end_idx))
 				extracted_answer = detokenizer.detokenize(passage_tokens[start_idx:end_idx], return_str=True)
 				# ((start_index, end_index)(Fsummary, precision, recall)
 				# (si, ei) > not used from the line below
