@@ -208,7 +208,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 	print("Generating {} examples...".format(data_type))
 	examples = []
 	rouge_metric = 2 # 0 = f, 1 = p, 2 = r
-	rouge_l_limit = 0.5
+	rouge_l_limit = 0.7
 	remove_tokens = ["'",'"','.',',','']
 	eval_examples = {}
 	total = 0
@@ -235,7 +235,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 	
 	empty_answers = 0
 	low_rouge_l = 0
-	for i in range(total_lines):
+	for i in tqdm(range(total_lines)):
 		source = json.loads(line)
 		answer_texts = []
 		answer_start = answer_end = 0

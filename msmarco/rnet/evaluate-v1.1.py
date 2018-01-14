@@ -9,7 +9,7 @@ import sys
 
 
 def normalize_answer(s):
-	"""Lower text and remove punctuation, articles and extra whitespace."""
+
 	def remove_articles(text):
 		return re.sub(r'\b(a|an|the)\b', ' ', text)
 
@@ -23,8 +23,7 @@ def normalize_answer(s):
 	def lower(text):
 		return text.lower()
 
-	#return white_space_fix(remove_articles(remove_punc(lower(s))))
-	return lower(s)
+	return white_space_fix(remove_articles(remove_punc(lower(s))))
 
 
 def f1_score(prediction, ground_truth):
