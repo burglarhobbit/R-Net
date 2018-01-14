@@ -90,7 +90,7 @@ def lcs_tokens(X,Y):
 			#if not answer_end_match:
 			#	answer_end = i
 			#	answer_end_match = True
-			answer_start_i = i,
+			answer_start_i = i
 			answer_start_j = j
 	
 		# If not same, then find the larger of two and
@@ -160,8 +160,8 @@ def lcs_tokens(X,Y):
 			j-=1
 	i = answer_start[0]
 	j = answer_start[1]
-	while i < m and j < n:	
-		if X[i+] == Y[j+1]:
+	while i < m-1 and j < n-1:	
+		if X[i+1] == Y[j+1]:
 			i+=1
 			j+=1
 			answer_end = i
