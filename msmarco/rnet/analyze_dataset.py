@@ -288,7 +288,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 		for passage in source['passages']:
 			passage_concat += " " + passage['passage_text'].replace(
 				"''", '" ').replace("``", '" ').lower()
-		passage_tokens = word_tokenize(passage_concbar-le-ducat)
+		passage_tokens = word_tokenize(passage_concat)
 
 		answer = source['answers']
 		if answer == [] or answer == ['']:
