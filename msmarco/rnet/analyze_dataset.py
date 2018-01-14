@@ -75,7 +75,7 @@ def lcs_tokens(X,Y):
 	j = n
 	while i > 0 and j > 0:
 		if (X[i-1] == Y[j-1]) and (X[i-1] not in ignore_tokens):
-			print(X[i-1],":",i-1)
+			#print(X[i-1],":",i-1)
 			index_fwd.append(i-1)
 			i-=1
 			j-=1
@@ -98,7 +98,7 @@ def lcs_tokens(X,Y):
 	answer_end = i
 	while i < m-1 and j < n-1:
 		if (X[i+1] == Y[j+1]) and (X[i+1] not in ignore_tokens):
-			print(X[i+1],":",i+1)
+			#print(X[i+1],":",i+1)
 			index_bwd.append(i+1)
 			i+=1
 			j+=1
@@ -208,6 +208,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 	print("Generating {} examples...".format(data_type))
 	examples = []
 	rouge_metric = 2 # 0 = f, 1 = p, 2 = r
+	rouge_l_limit = 0.5
 	remove_tokens = ["'",'"','.',',','']
 	eval_examples = {}
 	total = 0
@@ -261,7 +262,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 				answer_text = answer_text[:-1] if answer_text[-1] == "." else answer_text
 				answer_token = word_tokenize(answer_text)
 				index = lcs_tokens(passage_tokens, answer_token)
-				print(index)
+				#print(index)
 				fpr_scores = (0,0,0)
 				try:
 					start_idx, end_idx = index[0], index[-1]+1
@@ -273,7 +274,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 					#_, fpr_scores = rouge_span([extracted_answer], [detoken_ref_answer])
 					fpr_scores = rouge_l(extracted_answer, detoken_ref_answer)
 
-					print("Recall:",fpr_scores[rouge_metric])
+					#print("Recall:",fpr_scores[rouge_metric])
 				except Exception as e:
 					print(e)
 					#pass
@@ -282,7 +283,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 					answer_texts = [detoken_ref_answer]
 					extracted_answer_text = extracted_answer
 					answer_start, answer_end = start_idx, end_idx
-			if highest_rouge_l<0.7:
+			if highest_rouge_l<rouge_l_limit:
 				low_rouge_l += 1
 				print('\nLOW ROUGE - L\n')
 				line = fh.readline()
