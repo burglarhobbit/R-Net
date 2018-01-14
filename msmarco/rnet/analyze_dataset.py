@@ -345,7 +345,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 				answer_token = word_tokenize(answer_text)
 				index = lcs_tokens(passage_tokens, answer_token)
 				print(index)
-
+				fpr_scores = (0,0,0)
 				try:
 					start_idx, end_idx = index[0], index[-1]+1
 					print("\n\nStart index:{} End index:{}".format(start_idx,end_idx))
@@ -358,7 +358,8 @@ def process_file(filename, data_type, word_counter, char_counter):
 
 					print("Recall:",fpr_scores[rouge_metric])
 				except Exception as e:
-					pass
+					print("Exception:",e.printstacktrace())
+					#pass
 				if fpr_scores[rouge_metric]>highest_rouge_l:
 					highest_rouge_l = fpr_scores[rouge_metric]
 					answer_texts = [detoken_ref_answer]
