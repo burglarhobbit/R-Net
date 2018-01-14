@@ -116,7 +116,7 @@ def lcs_tokens(X,Y):
 
 	index = list(set(index_fwd).intersection(set(index_bwd)))
 	index.sort()
-	print(answer_start_match, answer_end_match)
+	#print(answer_start_match, answer_end_match)
 	if len(index) == 1:
 		index = index * 2
 	#	index[1] += 1
@@ -277,6 +277,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 					#print("Recall:",fpr_scores[rouge_metric])
 				except Exception as e:
 					print(e)
+					print(index)
 					#pass
 				if fpr_scores[rouge_metric]>highest_rouge_l:
 					highest_rouge_l = fpr_scores[rouge_metric]
