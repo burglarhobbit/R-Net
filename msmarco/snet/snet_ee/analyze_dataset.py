@@ -212,7 +212,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 	remove_tokens = ["'",'"','.',',','']
 	eval_examples = {}
 	total = 0
-	rouge = R()
+	#rouge = R()
 	fh = open(filename, "r")
 	line = fh.readline()
 	line_limit = 500
@@ -230,7 +230,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 		for _ in range(skip):
 			next(fh)
 
-	total_lines = line_limit
+	#total_lines = line_limit
 	#while(line):
 	
 	empty_answers = 0
