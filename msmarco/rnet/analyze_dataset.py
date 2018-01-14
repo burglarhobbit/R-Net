@@ -73,13 +73,13 @@ def lcs_tokens(X,Y):
 	
 	# Start from the right-most-bottom-most corner and
 	# one by one store characters in lcs[]
-	index = []
+	index_fwd = []
 	i = m
 	j = n
 	while i > 0 and j > 0:
 		if (X[i-1] == Y[j-1]) and (X[i-1] not in ignore_tokens):
 			print(X[i-1],":",i-1)
-			index.append(i-1)
+			index_fwd.append(i-1)
 			i-=1
 			j-=1
 			if not answer_start_match:
@@ -93,13 +93,16 @@ def lcs_tokens(X,Y):
 			i-=1
 		else:
 			j-=1
-	"""
+
+	index_fwd.reverse()
+	index_bwd = []
 	i = answer_start_i-1
 	j = answer_start_j-1
 	answer_end = i
 	while i < m-1 and j < n-1:
 		if (X[i+1] == Y[j+1]) and (X[i+1] not in ignore_tokens):
 			print(X[i+1],":",i+1)
+			index_bwd.append(i+1)
 			i+=1
 			j+=1
 			answer_end = i
@@ -113,9 +116,10 @@ def lcs_tokens(X,Y):
 			i+=1
 		else:
 			j+=1
-	"""
+
+	index = list[set(index_fwd).intersection(set(index_bwd))]
+	index.sort()
 	print(answer_start_match, answer_end_match)
-	index.reverse()
 	if len(index) == 1:
 		index = index * 2
 	#	index[1] += 1
@@ -258,6 +262,30 @@ def _lcs(X, Y, m, n):
 	return answer_start,answer_end+1
 """
 
+def rouge_l(evaluated, reference):
+	reference_count = len(reference)
+	evaluated_count = len(evaluated)
+
+	# Gets the overlapping ngrams between evaluated and reference
+	overlapping_ngrams = evaluated_ngrams.intersection(reference_ngrams)
+	overlapping_count = len(overlapping_ngrams)
+
+	# Handle edge case. This isn't mathematically correct, but it's good enough
+	if evaluated_count == 0:
+		precision = 0.0
+	else:
+		precision = overlapping_count / evaluated_count
+	  
+	if reference_count == 0:
+		recall = 0.0 
+	else:
+		recall = overlapping_count / reference_count
+	  
+	f1_score = 2.0 * ((precision * recall) / (precision + recall + 1e-8))
+
+	# return overlapping_count / reference_count
+	return f1_score, precision, recall
+
 def process_file(filename, data_type, word_counter, char_counter):
 	detokenizer = MosesDetokenizer()
 	print("Generating {} examples...".format(data_type))
@@ -325,7 +353,8 @@ def process_file(filename, data_type, word_counter, char_counter):
 					detoken_ref_answer = detokenizer.detokenize(answer_token, return_str=True)
 					# ((start_index, end_index)(Fsummary, precision, recall)
 					# (si, ei) > not used from the line below
-					_, fpr_scores = rouge_span([extracted_answer], [detoken_ref_answer])
+					#_, fpr_scores = rouge_span([extracted_answer], [detoken_ref_answer])
+					fpr_scores = rouge_span(extracted_answer, detoken_ref_answer)
 					print("Recall:",fpr_scores[rouge_metric])
 				except Exception as e:
 					pass
