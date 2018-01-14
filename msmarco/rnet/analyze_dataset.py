@@ -118,6 +118,7 @@ def lcs_tokens(X,Y):
 	index.reverse()
 	if len(index) == 1:
 		index = index * 2
+		index[1] += 1
 	return index
 """
 def lcs_tokens(X,Y):
