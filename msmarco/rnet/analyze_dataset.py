@@ -127,7 +127,7 @@ def lcs_tokens(X,Y):
 	#print "LCS of " + X + " and " + Y + " is " + "".join(lcs)
 	#if answer_start == answer_end:
 	#   answer_end += 1
-	return answer_start,answer_end+1
+	return answer_start_i,answer_end+1
 """
 def lcs_tokens(X,Y):
 	m = len(X)
