@@ -96,7 +96,7 @@ def evaluate_batch(model, num_batches, eval_file, sess, data_type, handle, str_h
 	answer_dict = {}
 	losses = []
 	outlier_count = 0
-	for _ in range(1, num_batches + 1):
+	for _ in tqdm(range(1, num_batches + 1)):
 		qa_id, loss, yp1, yp2, = sess.run(
 			[model.qa_id, model.loss, model.yp1, model.yp2], feed_dict={handle: str_handle})
 		answer_dict_, _, outlier = convert_tokens(
