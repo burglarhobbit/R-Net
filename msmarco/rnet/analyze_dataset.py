@@ -116,6 +116,8 @@ def lcs_tokens(X,Y):
 	"""
 	print(answer_start_match, answer_end_match)
 	index.reverse()
+	if len(index) == 1:
+		index = index * 2
 	return index
 """
 def lcs_tokens(X,Y):
