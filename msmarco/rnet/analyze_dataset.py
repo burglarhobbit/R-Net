@@ -51,13 +51,17 @@ def lcs_tokens(X,Y):
 	L = [[0 for x in range(n+1)] for x in range(m+1)]
 
 	# Following steps build L[m+1][n+1] in bottom up fashion. Note
-	# that L[i][j] contains length of LCS of X[0..i-1] and Y[0..j-1] 
+	# that L[i][j] contains length of LCS of X[0..i-1] and Y[0..j-1]
+	ignore_tokens = [",",".","?"] 
 	for i in range(m+1):
 		for j in range(n+1):
 			if i == 0 or j == 0:
 				L[i][j] = 0
 			elif X[i-1] == Y[j-1]:
-				L[i][j] = L[i-1][j-1] + 1
+				if X[i-1] in ignore_tokens:
+					L[i][j] = max(L[i-1][j], L[i][j-1])
+				else:
+					L[i][j] = L[i-1][j-1] + 1
 			else:
 				L[i][j] = max(L[i-1][j], L[i][j-1])
 
@@ -72,7 +76,7 @@ def lcs_tokens(X,Y):
 	i = m
 	j = n
 	while i > 0 and j > 0:
-		if X[i-1] == Y[j-1]:
+		if (X[i-1] == Y[j-1]) and (X[i-1] not in ignore_tokens):
 			print(X[i-1],":",i-1)
 			i-=1
 			j-=1
@@ -92,7 +96,7 @@ def lcs_tokens(X,Y):
 	j = answer_start_j-1
 	answer_end = i
 	while i < m-1 and j < n-1:
-		if X[i+1] == Y[j+1]:
+		if (X[i+1] == Y[j+1]) and (X[i+1] not in ignore_tokens):
 			print(X[i+1],":",i+1)
 			i+=1
 			j+=1
