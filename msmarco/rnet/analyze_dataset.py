@@ -65,7 +65,7 @@ def lcs_tokens(X,Y):
 	#index = L[m][n]
 
 	# initialized answer start and end index
-	answer_start = 0
+	answer_start = answer_start_i = answer_start_j = 0
 	answer_end = m
 	answer_end_match = False
 	answer_start_match = False
