@@ -287,8 +287,8 @@ def process_file(filename, data_type, word_counter, char_counter):
 		#for pi, p in enumerate(article["paragraphs"]):
 		for passage in source['passages']:
 			passage_concat += " " + passage['passage_text'].replace(
-				"''", '" ').replace("``", '" ').lower()
-		passage_tokens = word_tokenize(passage_concat)
+				"''", '" ').replace("``", '" ')..replace(":"," ")lower()
+		passage_tokens = word_tokenize(passage_concbar-le-ducat)
 
 		answer = source['answers']
 		if answer == [] or answer == ['']:
@@ -301,13 +301,14 @@ def process_file(filename, data_type, word_counter, char_counter):
 					continue
 				answer_text = i.strip().lower()
 				answer_text = answer_text[:-1] if answer_text[-1] == "." else answer_text
-
-				start_idx, end_idx = lcs_tokens(passage_tokens,word_tokenize(answer_text))
+				answer_token = word_tokenize(answer_text)
+				start_idx, end_idx = lcs_tokens(passage_tokens, answer_token)
 				print("\n\nStart index:{} End index:{}".format(start_idx,end_idx))
 				extracted_answer = detokenizer.detokenize(passage_tokens[start_idx:end_idx], return_str=True)
+				detoken_ref_answer = detokenizer.detokenize(answer_token, return_str=True)
 				# ((start_index, end_index)(Fsummary, precision, recall)
 				# (si, ei) > not used from the line below
-				_, fpr_scores = rouge_span([extracted_answer], [answer_text])
+				_, fpr_scores = rouge_span([extracted_answer], [detoken_ref_answer])
 				print("Recall:",fpr_scores[rouge_metric])
 				
 				if fpr_scores[rouge_metric]>highest_rouge_l:
