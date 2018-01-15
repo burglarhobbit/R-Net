@@ -5,8 +5,9 @@ import string
 from rouge_score import rouge_l_sentence_level as rouge_span
 import spacy
 
+nlp = spacy.blank("en")
+
 def word_tokenize(sent):
-	nlp = spacy.blank("en")
 	doc = nlp(sent)
 	return [token.text for token in doc]
 

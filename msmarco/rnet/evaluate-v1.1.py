@@ -6,7 +6,13 @@ import re
 import argparse
 import json
 import sys
+import spacy
 
+nlp = spacy.blank("en")
+
+def word_tokenize(sent):
+	doc = nlp(sent)
+	return [token.text for token in doc]
 
 def normalize_answer(s):
 
@@ -49,7 +55,7 @@ def metric_max_over_ground_truths(metric_fn, prediction, ground_truths):
 		scores_for_ground_truths.append(score)
 	return max(scores_for_ground_truths)
 
-def rouge_l(rouge_obj, prediction, ground_truth):
+def rouge_l_(rouge_obj, prediction, ground_truth):
 
 	prediction_tokens = normalize_answer(prediction)
 	ground_truth_tokens = normalize_answer(ground_truth)
@@ -60,7 +66,7 @@ def rouge_l(rouge_obj, prediction, ground_truth):
 	return rouge_l_
 
 def evaluate(eval_file, answer_dict):
-	f1 = rouge_l_= exact_match = total =  0
+	f1 = rouge_l_ = rouge_l_f =rouge_l_p = rouge_l_r = exact_match = total =  0
 	from rouge import Rouge
 	
 	rouge = Rouge()
@@ -81,7 +87,7 @@ def evaluate(eval_file, answer_dict):
 		b.append(str(i))
 	#print(len(a))
 	#print(len(b))
-	print(len(list(set(a).intersection(b))))
+	#print(len(list(set(a).intersection(b))))
 	for key, value in answer_dict.items():
 		total += 1
 		ground_truths = remapped_eval_file[str(key)]
@@ -90,13 +96,56 @@ def evaluate(eval_file, answer_dict):
 			exact_match_score, prediction, ground_truths)
 		f1 += metric_max_over_ground_truths(f1_score,
 											prediction, ground_truths)
-		rouge_l_ += rouge_l(rouge, prediction, ground_truths)
+		rouge_l_ += rouge_l_(rouge, prediction, ground_truths)
+		fpr = rouge_l_(prediction, ground_truths)
+		rouge_l_f = fpr[0]
+		rouge_l_p = fpr[1]
+		rouge_l_r = fpr[2]
 		#print(key)
 	exact_match = 100.0 * exact_match / total
 	f1 = 100.0 * f1 / total
 	rouge_l_ = 100.0 * rouge_l_ / total
+	rouge_l_f = 100.0 * rouge_l_f / total
+	rouge_l_p = 100.0 * rouge_l_p / total
+	rouge_l_r = 100.0 * rouge_l_r / total
 
-	return {'exact_match': exact_match, 'f1': f1, 'rouge-l': rouge_l_}
+	return {'exact_match': exact_match, 'f1': f1, 'rouge-l': rouge_l_, 'rouge-l-f': rouge_l_f,
+			'rouge-l-p': rouge_l_p, 'rouge-l-r': rouge_l_r}
+
+def rouge_l(evaluated_ngrams, reference_ngrams):
+	evaluated_ngrams = set(evaluated_ngrams)
+	reference_ngrams = set(reference_ngrams)
+	reference_count = len(reference_ngrams)
+	evaluated_count = len(evaluated_ngrams)
+
+	# Gets the overlapping ngrams between evaluated and reference
+	overlapping_ngrams = evaluated_ngrams.intersection(reference_ngrams)
+	overlapping_count = len(overlapping_ngrams)
+
+	# Handle edge case. This isn't mathematically correct, but it's good enough
+	if evaluated_count == 0:
+		precision = 0.0
+	else:
+		precision = overlapping_count / evaluated_count
+	  
+	if reference_count == 0:
+		recall = 0.0 
+	else:
+		recall = overlapping_count / reference_count
+	  
+	f1_score = 2.0 * ((precision * recall) / (precision + recall + 1e-8))
+
+	# return overlapping_count / reference_count
+	return f1_score, precision, recall
+
+def rouge_get_scores(prediction, ground_truth):
+
+	prediction_tokens = word_tokenize(normalize_answer(prediction))
+	ground_truth_tokens = word_tokenize(normalize_answer(ground_truth))
+	scores = rouge_l(prediction_tokens, ground_truth_tokens)
+	#print(prediction_tokens)
+	#print(ground_truth_tokens)
+	return scores
 
 if __name__ == '__main__':
 	expected_version = '1.1'

@@ -7,7 +7,6 @@ from collections import Counter
 import numpy as np
 from nltk.tokenize.moses import MosesDetokenizer
 from rouge import Rouge as R
-from rouge_score import rouge_l_sentence_level as rouge_span
 
 nlp = spacy.blank("en")
 
@@ -212,7 +211,7 @@ def process_file(filename, data_type, word_counter, char_counter):
 	remove_tokens = ["'",'"','.',',','']
 	eval_examples = {}
 	total = 0
-	rouge = R()
+	#rouge = R()
 	fh = open(filename, "r")
 	line = fh.readline()
 	line_limit = 500
