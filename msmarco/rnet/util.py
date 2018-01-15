@@ -143,7 +143,7 @@ def rouge_get_scores(prediction, ground_truth):
 
 def evaluate(eval_file, answer_dict):
 	
-	f1 = exact_match = rouge_l_f = rouge_l_p = rouge_l_r = total = 0
+	f1 = exact_match = rouge_l = rouge_l_f = rouge_l_p = rouge_l_r = total = 0
 
 	for key, value in answer_dict.items():
 		total += 1

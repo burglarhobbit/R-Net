@@ -97,7 +97,7 @@ def evaluate(eval_file, answer_dict):
 		f1 += metric_max_over_ground_truths(f1_score,
 											prediction, ground_truths)
 		rouge_l_ += rouge_l_(rouge, prediction, ground_truths)
-		fpr = rouge_l_(prediction, ground_truths)
+		fpr = rouge_get_scores(prediction, ground_truths)
 		rouge_l_f = fpr[0]
 		rouge_l_p = fpr[1]
 		rouge_l_r = fpr[2]
