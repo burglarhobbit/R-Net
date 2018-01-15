@@ -153,9 +153,9 @@ def evaluate(eval_file, answer_dict):
 		f1 += metric_max_over_ground_truths(f1_score,
 											prediction, ground_truths)
 		rouge_l = rouge_get_scores(prediction, ground_truths[0])
-		rouge_l_f = rouge_l[0]
-		rouge_l_p = rouge_l[1]
-		rouge_l_r = rouge_l[2]
+		rouge_l_f += rouge_l[0]
+		rouge_l_p += rouge_l[1]
+		rouge_l_r += rouge_l[2]
 	exact_match = 100.0 * exact_match / total
 	f1 = 100.0 * f1 / total
 	rouge_l_f = 100.0 * rouge_l_f / total
