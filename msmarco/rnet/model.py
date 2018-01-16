@@ -131,7 +131,8 @@ class Model(object):
 			self.yp2 = tf.where(condition, tf.Print(self.yp2,[self.yp2],message="Yp2:"), self.yp1)
 
 	def print(self):
-
+		pass
+		
 	def get_loss(self):
 		return self.loss
 
