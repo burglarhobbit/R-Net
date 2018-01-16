@@ -126,6 +126,12 @@ class Model(object):
 				logits=logits2, labels=self.y2)
 			self.loss = tf.reduce_mean(losses + losses2)
 
+			condition = tf.greater(loss, 11)
+			self.yp1 = tf.where(condition, tf.Print(self.yp1,[self.yp1],message="Yp1:"), self.yp1)
+			self.yp2 = tf.where(condition, tf.Print(self.yp2,[self.yp2],message="Yp2:"), self.yp1)
+
+	def print(self):
+
 	def get_loss(self):
 		return self.loss
 
