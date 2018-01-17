@@ -158,7 +158,9 @@ def test(config):
 		losses = []
 		answer_dict = {}
 		remapped_dict = {}
-		for step in tqdm(range(total // config.batch_size + 1)):
+
+		# tqdm
+		for step in range(total // config.batch_size + 1):
 			qa_id, loss, yp1, yp2 = sess.run(
 				[model.qa_id, model.loss, model.yp1, model.yp2])
 			answer_dict_, remapped_dict_, outlier = convert_tokens(
@@ -167,8 +169,11 @@ def test(config):
 			remapped_dict.update(remapped_dict_)
 			losses.append(loss)
 			if(loss>50):
-				print("IDs: {} Losses: {} Yp1: {} Yp2: {}".format(qa_id.tolist(),\
-					loss.tolist(), yp1.tolist(), yp2.tolist()))
+				for i,j,k in zip(qa_id.tolist(),yp1.tolist(),yp2.tolist()):
+					if j>=k:
+						print(i,j,k)
+				#print("IDs: {} Losses: {} Yp1: {} Yp2: {}".format(qa_id.tolist(),\
+				#	loss.tolist(), yp1.tolist(), yp2.tolist()))
 		loss = np.mean(losses)
 
 		# evaluate with answer_dict, but in evaluate-v1.1.py, evaluate with remapped_dict
