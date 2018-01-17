@@ -17,10 +17,6 @@ class Model(object):
 
 		self.c_mask = tf.cast(self.c, tf.bool)
 		self.q_mask = tf.cast(self.q, tf.bool)
-		
-		# passage ranking line:
-		self.pr_mask = tf.cast(self.p, tf.bool)
-
 		self.c_len = tf.reduce_sum(tf.cast(self.c_mask, tf.int32), axis=1)
 		self.q_len = tf.reduce_sum(tf.cast(self.q_mask, tf.int32), axis=1)
 
