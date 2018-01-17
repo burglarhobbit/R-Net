@@ -133,26 +133,24 @@ class Model(object):
 				logits=logits2, labels=self.y2)
 			self.loss = tf.reduce_mean(losses + losses2)
 
-			"""
-			# Create a summary operation
-			summary_op1 = tf.summary.tensor_summary('softmax_input', out)
-			summary_op2 = tf.summary.tensor_summary('softmax_input', out)
-			summary_op3 = tf.summary.tensor_summary('softmax_input', out)
-			summary_op4 = tf.summary.tensor_summary('softmax_input', out)
-
-			# Create the summary
-			summary_str = sess.run(summary_op)
-
-			# Create a summary writer
-			writer = tf.train.SummaryWriter(...)
-
-			# Write the summary
-			writer.add_summary(summary_str)
 			# print losses
 			condition = tf.greater(self.loss, 11)
 			self.yp1 = tf.where(condition, tf.Print(self.yp1,[self.yp1],message="Yp1:"), self.yp1)
 			self.yp2 = tf.where(condition, tf.Print(self.yp2,[self.yp2],message="Yp2:"), self.yp1)
-			"""
+
+		# Passage ranking
+		with tf.variable_scope("passage-ranking-attention"):
+			pr_att = dot_attention(v_P, init, mask=self.q_mask, hidden=d,
+								   keep_prob=config.keep_prob, is_train=self.is_train)
+			rnn = gru(num_layers=1, num_units=d, batch_size=N, input_size=pr_att.get_shape(
+			).as_list()[-1], keep_prob=config.keep_prob, is_train=self.is_train)
+			att_rp = rnn(qc_att, seq_len=self.c_len)
+
+		# Wg
+		concatenate = tf.concat([init,att_rp])
+		g = v_g.dot(tf.tanh(tf.dot(Wg.multiply(concatenate)))) # use dense layer
+		# add softmax and then loss
+
 
 	def print(self):
 		pass

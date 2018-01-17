@@ -166,9 +166,6 @@ def test(config):
 			answer_dict.update(answer_dict_)
 			remapped_dict.update(remapped_dict_)
 			losses.append(loss)
-			if(loss>50):
-				print("IDs: {} Losses: {} Yp1: {} Yp2: {}".format(qa_id.tolist(),\
-					loss.tolist(), yp1.tolist(), yp2.tolist()))
 		loss = np.mean(losses)
 
 		# evaluate with answer_dict, but in evaluate-v1.1.py, evaluate with remapped_dict
