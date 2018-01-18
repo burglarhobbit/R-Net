@@ -170,7 +170,7 @@ def test(config):
 			losses.append(loss)
 			if(loss>50):
 				for i,j,k in zip(qa_id.tolist(),yp1.tolist(),yp2.tolist()):
-					print(remapped_dict[i],j,k)
+					print(answer_dict[i],j,k)
 				#print("IDs: {} Losses: {} Yp1: {} Yp2: {}".format(qa_id.tolist(),\
 				#	loss.tolist(), yp1.tolist(), yp2.tolist()))
 		loss = np.mean(losses)
