@@ -168,6 +168,7 @@ def test(config):
 			answer_dict.update(answer_dict_)
 			remapped_dict.update(remapped_dict_)
 			losses.append(loss)
+			print("\n",loss)
 			if(loss>50):
 				for i,j,k in zip(qa_id.tolist(),yp1.tolist(),yp2.tolist()):
 					print(answer_dict[str(i)],j,k)
