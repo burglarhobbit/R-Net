@@ -101,9 +101,9 @@ def evaluate_batch(model, num_batches, eval_file, sess, data_type, handle, str_h
 			[model.qa_id, model.loss, model.yp1, model.yp2], feed_dict={handle: str_handle})
 		answer_dict_, _, outlier = convert_tokens(
 			eval_file, qa_id.tolist(), yp1.tolist(), yp2.tolist())
-		if outlier:
-			outlier_count += 1
-			continue
+		#if outlier:
+		#	outlier_count += 1
+		#	continue
 		answer_dict.update(answer_dict_)
 		losses.append(loss)
 	#print("outlier_count:",outlier_count)
@@ -160,7 +160,7 @@ def test(config):
 		remapped_dict = {}
 
 		# tqdm
-		for step in range(total // config.batch_size + 1):
+		for step in tqdm(range(total // config.batch_size + 1)):
 			qa_id, loss, yp1, yp2 = sess.run(
 				[model.qa_id, model.loss, model.yp1, model.yp2])
 			answer_dict_, remapped_dict_, outlier = convert_tokens(
@@ -170,8 +170,7 @@ def test(config):
 			losses.append(loss)
 			if(loss>50):
 				for i,j,k in zip(qa_id.tolist(),yp1.tolist(),yp2.tolist()):
-					if j>=k:
-						print(i,j,k)
+					print(remapped_dict[i],j,k)
 				#print("IDs: {} Losses: {} Yp1: {} Yp2: {}".format(qa_id.tolist(),\
 				#	loss.tolist(), yp1.tolist(), yp2.tolist()))
 		loss = np.mean(losses)
