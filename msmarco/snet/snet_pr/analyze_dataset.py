@@ -214,7 +214,7 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 	#rouge = R()
 	fh = open(filename, "r")
 	line = fh.readline()
-	line_limit = 100
+	line_limit = 500
 	if data_type == "train":
 		total_lines = 82326 # ms marco training data set lines
 	elif data_type == "dev":
@@ -229,7 +229,7 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 		for _ in range(skip):
 			next(fh)
 
-	total_lines = line_limit
+	#total_lines = line_limit
 	#while(line):
 	
 	empty_answers = 0
