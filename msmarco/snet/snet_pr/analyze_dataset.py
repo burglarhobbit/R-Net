@@ -369,7 +369,7 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 		y2s.append(y2)
 		total += 1
 		example = {"passage_tokens": passage_tokens, "passage_chars": passage_chars, "ques_tokens": ques_tokens,
-				   "ques_chars": ques_chars, "y1s": y1s, "y2s": y2s, "id": total, "uuid": source["query_id"]
+				   "ques_chars": ques_chars, "y1s": y1s, "y2s": y2s, "id": total, "uuid": source["query_id"],
 				   "passage_pr_tokens": passage_pr_tokens, "passage_rank": passage_rank,
 				   "passage_pr_chars": passage_pr_chars}
 		examples.append(example)
