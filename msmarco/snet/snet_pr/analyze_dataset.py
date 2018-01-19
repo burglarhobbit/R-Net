@@ -249,7 +249,8 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 			passage_text = passage['passage_text'].replace(
 				"''", '" ').replace("``", '" ').lower()
 			passage_concat += " " + passage_text
-			passage_pr_tokens[j] = word_tokenize(passage_concat)
+			passage_pr_tokens[j] = word_tokenize(passage_text)
+		passage_tokens = word_tokenize(passage_concat)
 
 		answer = source['answers']
 		if answer == [] or answer == ['']:
