@@ -214,7 +214,7 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 	#rouge = R()
 	fh = open(filename, "r")
 	line = fh.readline()
-	line_limit = 500
+	line_limit = 100
 	if data_type == "train":
 		total_lines = 82326 # ms marco training data set lines
 	elif data_type == "dev":
@@ -249,7 +249,7 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 			passage_text = passage['passage_text'].replace(
 				"''", '" ').replace("``", '" ').lower()
 			passage_concat += " " + passage_text
-			passage_pr_tokens[j] = word_tokenize(passage_text)
+			passage_pr_tokens[j] = word_tokenize(" " + passage_text)
 		passage_tokens = word_tokenize(passage_concat)
 
 		answer = source['answers']
@@ -537,7 +537,7 @@ def build_features(config, examples, data_type, out_file, word2idx_dict, char2id
 		# for passage ranking
 		for i, paragraph in enumerate(example["passage_pr_tokens"]):
 			for i, token in enumerate(paragraph):
-				passage_idxs[i][j] = _get_word(token)
+				passage_idxs[i,j] = _get_word(token)
 		# for pr
 		for i, paragraph in enumerate(example["passage_pr_chars"]):
 			for j, token in enumerate(paragraph):
