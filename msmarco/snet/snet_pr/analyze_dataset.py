@@ -581,7 +581,7 @@ def prepro_(config):
 	dev_examples, dev_eval = process_file(
 		config.max_para, config.dev_file, "dev", word_counter, char_counter)
 	test_examples, test_eval = process_file(
-		config.test_file, "test", word_counter, char_counter)
+		config.max_para, config.test_file, "test", word_counter, char_counter)
 	word_emb_mat, word2idx_dict = get_embedding(
 		word_counter, "word", emb_file=config.glove_file, size=config.glove_size, vec_size=config.glove_dim)
 	char_emb_mat, char2idx_dict = get_embedding(
