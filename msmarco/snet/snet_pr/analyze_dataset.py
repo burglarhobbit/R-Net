@@ -202,7 +202,7 @@ def rouge_l(evaluated_ngrams, reference_ngrams):
 	# return overlapping_count / reference_count
 	return f1_score, precision, recall
 
-def process_file(filename, data_type, word_counter, char_counter):
+def process_file(max_para_count, filename, data_type, word_counter, char_counter):
 	detokenizer = MosesDetokenizer()
 	print("Generating {} examples...".format(data_type))
 	examples = []
@@ -241,12 +241,15 @@ def process_file(filename, data_type, word_counter, char_counter):
 		highest_rouge_l = 0
 		extracted_answer_text = ''
 		passage_concat = ''
+		passage_pr_tokens = ['--NULL--']*max_para_count
+		passage_rank = [0]*max_para_count
 
 		#for pi, p in enumerate(article["paragraphs"]):
-		for passage in source['passages']:
-			passage_concat += " " + passage['passage_text'].replace(
+		for j,passage in enumerate(source['passages']):
+			passage_text = passage['passage_text'].replace(
 				"''", '" ').replace("``", '" ').lower()
-		passage_tokens = word_tokenize(passage_concat)
+			passage_concat += " " + passage_text
+			passage_pr_tokens[j] = word_tokenize(passage_concat)
 
 		answer = source['answers']
 		if answer == [] or answer == ['']:
@@ -304,6 +307,17 @@ def process_file(filename, data_type, word_counter, char_counter):
 					print("\n\n")
 				"""
 				continue
+			else:
+				p_length_temp = 0
+				for j,passage in enumerate(source['passages']):
+					passage_text = passage['passage_text'].replace(
+						"''", '" ').replace("``", '" ').lower()
+					p_token = word_tokenize(" " + passage_text)
+					p_length_temp += len(p_token)
+					if answer_start<=p_length_temp:
+						passage_rank[j] = 1
+						break
+
 		else:
 			answer_text = answer[0].strip()
 		"""
@@ -323,6 +337,8 @@ def process_file(filename, data_type, word_counter, char_counter):
 		print("\n\n")
 		"""
 		passage_chars = [list(token) for token in passage_tokens]
+		passage_pr_chars = [[list(token) for token in passage_tokens] \
+										 for passage_tokens in passage_pr_tokens]
 		spans = convert_idx(passage_concat, passage_tokens)
 
 		# word_counter increase for every qa pair. i.e. 1 since ms marco has 1 qa pair per para
@@ -353,10 +369,13 @@ def process_file(filename, data_type, word_counter, char_counter):
 		y2s.append(y2)
 		total += 1
 		example = {"passage_tokens": passage_tokens, "passage_chars": passage_chars, "ques_tokens": ques_tokens,
-				   "ques_chars": ques_chars, "y1s": y1s, "y2s": y2s, "id": total, "uuid": source["query_id"]}
+				   "ques_chars": ques_chars, "y1s": y1s, "y2s": y2s, "id": total, "uuid": source["query_id"]
+				   "passage_pr_tokens": passage_pr_tokens, "passage_rank": passage_rank,
+				   "passage_pr_chars": passage_pr_chars}
 		examples.append(example)
 		eval_examples[str(total)] = {
-			"passage_concat": passage_concat, "spans": spans, "answers": answer_texts, "uuid": source["query_id"]}
+			"passage_concat": passage_concat, "spans": spans, "answers": answer_texts, "uuid": source["query_id"]
+			"passage_rank": passage_rank}
 		line = fh.readline()
 	random.shuffle(examples)
 	print("{} questions in total".format(len(examples)))
@@ -473,10 +492,17 @@ def build_features(config, examples, data_type, out_file, word2idx_dict, char2id
 		total += 1
 		passage_idxs = np.zeros([para_limit], dtype=np.int32)
 		passage_char_idxs = np.zeros([para_limit, char_limit], dtype=np.int32)
+
+		# for passage ranking
+		passage_pr_idxs = np.zeros([config.max_para, para_limit], dtype=np.int32)
+		passage_char_pr_idxs = np.zeros([config.max_para, para_limit, char_limit], dtype=np.int32)
+		
 		ques_idxs = np.zeros([ques_limit], dtype=np.int32)
 		ques_char_idxs = np.zeros([ques_limit, char_limit], dtype=np.int32)
 		y1 = np.zeros([para_limit], dtype=np.float32)
 		y2 = np.zeros([para_limit], dtype=np.float32)
+		#y1 = np.zeros([config.max_para,para_limit], dtype=np.float32)
+		#y2 = np.zeros([config.max_para,para_limit], dtype=np.float32)
 
 		def _get_word(word):
 			for each in (word, word.lower(), word.capitalize(), word.upper()):
@@ -507,6 +533,18 @@ def build_features(config, examples, data_type, out_file, word2idx_dict, char2id
 					break
 				ques_char_idxs[i, j] = _get_char(char)
 
+		# for passage ranking
+		for i, paragraph in enumerate(example["passage_pr_tokens"]):
+			for i, token in enumerate(paragraph):
+				passage_idxs[i][j] = _get_word(token)
+		# for pr
+		for i, paragraph in enumerate(example["passage_pr_chars"]):
+			for j, token in enumerate(paragraph):
+				for k, char in enumerate(token):
+					if k == char_limit:
+						break
+					passage_char_pr_idxs[i, j, k] = _get_char(char)
+
 		start, end = example["y1s"][-1], example["y2s"][-1]
 		y1[start], y2[end] = 1.0, 1.0
 
@@ -515,6 +553,8 @@ def build_features(config, examples, data_type, out_file, word2idx_dict, char2id
 								  "ques_idxs": tf.train.Feature(bytes_list=tf.train.BytesList(value=[ques_idxs.tostring()])),
 								  "passage_char_idxs": tf.train.Feature(bytes_list=tf.train.BytesList(value=[passage_char_idxs.tostring()])),
 								  "ques_char_idxs": tf.train.Feature(bytes_list=tf.train.BytesList(value=[ques_char_idxs.tostring()])),
+								  "passage_pr_idxs": tf.train.Feature(bytes_list=tf.train.BytesList(value=[passage_pr_idxs.tostring()])),
+								  "passage_char_pr_idxs": tf.train.Feature(bytes_list=tf.train.BytesList(value=[passage_char_pr_idxs.tostring()])),
 								  "y1": tf.train.Feature(bytes_list=tf.train.BytesList(value=[y1.tostring()])),
 								  "y2": tf.train.Feature(bytes_list=tf.train.BytesList(value=[y2.tostring()])),
 								  "id": tf.train.Feature(int64_list=tf.train.Int64List(value=[example["id"]]))
@@ -536,9 +576,9 @@ def save(filename, obj, message=None):
 def prepro_(config):
 	word_counter, char_counter = Counter(), Counter()
 	train_examples, train_eval = process_file(
-		config.train_file, "train", word_counter, char_counter)
+		config.max_para, config.train_file, "train", word_counter, char_counter)
 	dev_examples, dev_eval = process_file(
-		config.dev_file, "dev", word_counter, char_counter)
+		config.max_para, config.dev_file, "dev", word_counter, char_counter)
 	test_examples, test_eval = process_file(
 		config.test_file, "test", word_counter, char_counter)
 	word_emb_mat, word2idx_dict = get_embedding(

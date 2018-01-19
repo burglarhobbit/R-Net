@@ -29,10 +29,10 @@ glove_file = os.path.join(path, "snetP_data", "data", "glove", "glove.840B.300d.
 #target_dir = os.path.join(hdd2, "snetP_data", "snet_data")
 
 #target_dir = "data"
-target_dir = os.path.join(path, "snetP_data", "rnet", "msmarco")
-log_dir = os.path.join(path, "snetP_data", "rnet", "msmarco", "log", "event")
-save_dir = os.path.join(path, "snetP_data", "rnet", "msmarco", "log", "model")
-answer_dir = os.path.join(path, "snetP_data", "rnet", "msmarco","log", "answer")
+target_dir = os.path.join(path, "snetP_data", "rnet", "msmarco", "pr")
+log_dir = os.path.join(path, "snetP_data", "snet", "snet_pr", "log", "event")
+save_dir = os.path.join(path, "snetP_data", "snet", "snet_pr", "log", "model")
+answer_dir = os.path.join(path, "snetP_data", "snet", "snet_pr", "log", "answer")
 
 train_record_file = os.path.join(target_dir, "train.tfrecords")
 dev_record_file = os.path.join(target_dir, "dev.tfrecords")
@@ -85,8 +85,8 @@ flags.DEFINE_string("answer_file", answer_file, "Out file for answer")
 flags.DEFINE_integer("glove_size", int(2.2e6), "Corpus size for Glove")
 flags.DEFINE_integer("glove_dim", 300, "Embedding dimension for Glove")
 flags.DEFINE_integer("char_dim", 8, "Embedding dimension for char")
-
 flags.DEFINE_integer("para_limit", 400, "Limit length for paragraph")
+flags.DEFINE_integer("max_para", 12, "Limit length for paragraph")
 flags.DEFINE_integer("ques_limit", 50, "Limit length for question")
 flags.DEFINE_integer("test_para_limit", 1000,
 					 "Limit length for paragraph in test file")
@@ -102,18 +102,18 @@ flags.DEFINE_boolean("use_cudnn", True, "Whether to use cudnn rnn (should be Fal
 flags.DEFINE_boolean("is_bucket", True, "build bucket batch iterator or not")
 flags.DEFINE_integer("bucket_range", [40, 401, 40], "the range of bucket")
 
-flags.DEFINE_integer("batch_size", 64, "Batch size")
+flags.DEFINE_integer("batch_size", 32, "Batch size") # 64
 flags.DEFINE_integer("num_steps", 50000, "Number of steps")
 flags.DEFINE_integer("checkpoint", 1000,
 					 "checkpoint to save and evaluate the model")
 flags.DEFINE_integer("period", 100, "period to save batch loss")
 flags.DEFINE_integer("val_num_batches", 150,
 					 "Number of batches to evaluate the model")
-flags.DEFINE_float("init_lr", 0.5, "Initial learning rate for Adadelta")
-flags.DEFINE_float("keep_prob", 0.7, "Dropout keep prob in rnn") #0.7
-flags.DEFINE_float("ptr_keep_prob", 0.7, "Dropout keep prob for pointer network") #0.7
+flags.DEFINE_float("init_lr", 1.0, "Initial learning rate for Adadelta")
+flags.DEFINE_float("keep_prob", 0.9, "Dropout keep prob in rnn") #0.7
+flags.DEFINE_float("ptr_keep_prob", 0.9, "Dropout keep prob for pointer network") #0.7
 flags.DEFINE_float("grad_clip", 5.0, "Global Norm gradient clipping rate")
-flags.DEFINE_integer("hidden", 75, "Hidden size") #75
+flags.DEFINE_integer("hidden", 150, "Hidden size") #75
 flags.DEFINE_integer("char_hidden", 100, "GRU dimention for char")
 flags.DEFINE_integer("patience", 3, "Patience for learning rate decay")
 flags.DEFINE_string("bd","bd","bd")
