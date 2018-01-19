@@ -229,7 +229,7 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 		for _ in range(skip):
 			next(fh)
 
-	#total_lines = line_limit
+	total_lines = line_limit
 	#while(line):
 	
 	empty_answers = 0
