@@ -537,7 +537,7 @@ def build_features(config, examples, data_type, out_file, word2idx_dict, char2id
 		# for passage ranking
 		for i, paragraph in enumerate(example["passage_pr_tokens"]):
 			for i, token in enumerate(paragraph):
-				passage_idxs[i,j] = _get_word(token)
+				passage_pr_idxs[i,j] = _get_word(token)
 		# for pr
 		for i, paragraph in enumerate(example["passage_pr_chars"]):
 			for j, token in enumerate(paragraph):
