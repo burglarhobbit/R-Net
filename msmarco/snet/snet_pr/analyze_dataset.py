@@ -374,7 +374,7 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 				   "passage_pr_chars": passage_pr_chars}
 		examples.append(example)
 		eval_examples[str(total)] = {
-			"passage_concat": passage_concat, "spans": spans, "answers": answer_texts, "uuid": source["query_id"]
+			"passage_concat": passage_concat, "spans": spans, "answers": answer_texts, "uuid": source["query_id"],
 			"passage_rank": passage_rank}
 		line = fh.readline()
 	random.shuffle(examples)
