@@ -202,7 +202,7 @@ def rouge_l(evaluated_ngrams, reference_ngrams):
 	# return overlapping_count / reference_count
 	return f1_score, precision, recall
 
-def process_file(max_para_count, filename, data_type, word_counter, char_counter):
+def process_file(max_para_count, filename, data_type, word_counter, char_counter, is_line_limit):
 	detokenizer = MosesDetokenizer()
 	print("Generating {} examples...".format(data_type))
 	examples = []
@@ -214,7 +214,7 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 	#rouge = R()
 	fh = open(filename, "r")
 	line = fh.readline()
-	line_limit = 500
+	line_limit = 100
 	if data_type == "train":
 		total_lines = 82326 # ms marco training data set lines
 	elif data_type == "dev":
@@ -229,7 +229,8 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 		for _ in range(skip):
 			next(fh)
 
-	#total_lines = line_limit
+	if is_line_limit:
+		total_lines = line_limit
 	#while(line):
 	
 	empty_answers = 0
@@ -583,11 +584,11 @@ def save(filename, obj, message=None):
 def prepro_(config):
 	word_counter, char_counter = Counter(), Counter()
 	train_examples, train_eval = process_file(
-		config.max_para, config.train_file, "train", word_counter, char_counter)
+		config.max_para, config.train_file, "train", word_counter, char_counter, config.line_limit_prepro)
 	dev_examples, dev_eval = process_file(
-		config.max_para, config.dev_file, "dev", word_counter, char_counter)
+		config.max_para, config.dev_file, "dev", word_counter, char_counter, config.line_limit_prepro)
 	test_examples, test_eval = process_file(
-		config.max_para, config.test_file, "test", word_counter, char_counter)
+		config.max_para, config.test_file, "test", word_counter, char_counter, config.line_limit_prepro)
 	word_emb_mat, word2idx_dict = get_embedding(
 		word_counter, "word", emb_file=config.glove_file, size=config.glove_size, vec_size=config.glove_dim)
 	char_emb_mat, char2idx_dict = get_embedding(
