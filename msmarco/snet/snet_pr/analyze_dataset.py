@@ -253,7 +253,7 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 	low_rouge_l = np.zeros(3,dtype=np.int32)
 
 	# individual para span generation
-	para_with_answer_count = np.zeros(max_para_count,dtype=int32)
+	para_with_answer_count = np.zeros(max_para_count,dtype=np.int32)
 
 	for i in tqdm(range(total_lines)):
 		source = json.loads(line)
