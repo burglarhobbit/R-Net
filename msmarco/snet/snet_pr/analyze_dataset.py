@@ -319,7 +319,7 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 					p_length_temp += len(p_token)
 					if answer_start<=p_length_temp:
 						passage_rank[j] = 1
-						if answer_end <= p_length_temp:
+						if answer_end > p_length_temp:
 							multi_para_answer_count += 1
 						break
 
