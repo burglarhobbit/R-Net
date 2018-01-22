@@ -234,6 +234,7 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 	
 	empty_answers = 0
 	low_rouge_l = 0
+	multi_para_answer_count = 0
 	for i in tqdm(range(total_lines)):
 		source = json.loads(line)
 		answer_texts = []
@@ -317,6 +318,8 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 					p_length_temp += len(p_token)
 					if answer_start<=p_length_temp:
 						passage_rank[j] = 1
+						if answer_end <= p_length_temp:
+							multi_para_answer_count += 1
 						break
 
 		else:
@@ -382,6 +385,7 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 	print("{} questions in total".format(len(examples)))
 	print("{} questions with empty answer".format(empty_answers))
 	print("{} questions with low rouge-l answers".format(low_rouge_l))
+	print("{} questions with multipara answers out of total valid examples".format(multi_para_answer_count))
 
 	"""
 	# original implementation for comparision purposes
@@ -492,6 +496,7 @@ def build_features(config, examples, data_type, out_file, word2idx_dict, char2id
 
 		total += 1
 		passage_idxs = np.zeros([para_limit], dtype=np.int32)
+		passage_rank = np.array(example["passage_rank"], dtype=np.int32)
 		passage_char_idxs = np.zeros([para_limit, char_limit], dtype=np.int32)
 
 		# for passage ranking
@@ -554,6 +559,7 @@ def build_features(config, examples, data_type, out_file, word2idx_dict, char2id
 								  "ques_idxs": tf.train.Feature(bytes_list=tf.train.BytesList(value=[ques_idxs.tostring()])),
 								  "passage_char_idxs": tf.train.Feature(bytes_list=tf.train.BytesList(value=[passage_char_idxs.tostring()])),
 								  "ques_char_idxs": tf.train.Feature(bytes_list=tf.train.BytesList(value=[ques_char_idxs.tostring()])),
+								  "passage_rank": tf.train.Feature(bytes_list=tf.train.BytesList(value=[passage_rank.tostring()])),
 								  "passage_pr_idxs": tf.train.Feature(bytes_list=tf.train.BytesList(value=[passage_pr_idxs.tostring()])),
 								  "passage_char_pr_idxs": tf.train.Feature(bytes_list=tf.train.BytesList(value=[passage_char_pr_idxs.tostring()])),
 								  "y1": tf.train.Feature(bytes_list=tf.train.BytesList(value=[y1.tostring()])),
