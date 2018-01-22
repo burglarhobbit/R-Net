@@ -266,7 +266,7 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 		extracted_answer_text = ''
 		passage_concat = ''
 		passage_pr_tokens = ['--NULL--']*max_para_count
-		passage_rank = np.zeros(max_para_count,dtype=np.int32)
+		passage_rank = np.zeros(max_para_count,dtype=np.float32)
 		individual_rank = np.zeros(max_para_count,dtype=np.int32)
 		#for pi, p in enumerate(article["paragraphs"]):
 		for j,passage in enumerate(source['passages']):
@@ -281,7 +281,7 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 			line = fh.readline()
 			continue
 		elif len(answer)>=1:
-			for i in answer:
+			for answer_i,i in enumerate(answer):
 				if i.strip() == "":
 					continue
 
@@ -534,7 +534,7 @@ def build_features(config, examples, data_type, out_file, word2idx_dict, char2id
 
 		total += 1
 		passage_idxs = np.zeros([para_limit], dtype=np.int32)
-		passage_rank = np.array(example["passage_rank"], dtype=np.float32)
+		passage_rank = example["passage_rank"]
 		passage_char_idxs = np.zeros([para_limit, char_limit], dtype=np.int32)
 
 		# for passage ranking
