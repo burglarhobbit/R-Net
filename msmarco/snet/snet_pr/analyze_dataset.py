@@ -176,6 +176,23 @@ def _lcs(X, Y, m, n):
 	#   answer_end += 1
 	return answer_start,answer_end+1
 
+def normalize_answer(s):
+
+	def remove_articles(text):
+		return re.sub(r'\b(a|an|the)\b', ' ', text)
+
+	def white_space_fix(text):
+		return ' '.join(text.split())
+
+	def remove_punc(text):
+		exclude = set(string.punctuation)
+		return ''.join(ch for ch in text if ch not in exclude)
+
+	def lower(text):
+		return text.lower()
+
+	return white_space_fix(remove_articles(remove_punc(lower(s))))
+
 def rouge_l(evaluated_ngrams, reference_ngrams):
 	evaluated_ngrams = set(evaluated_ngrams)
 	reference_ngrams = set(reference_ngrams)
@@ -210,8 +227,7 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 	rouge_l_limit = 0.7
 	remove_tokens = ["'",'"','.',',','']
 	eval_examples = {}
-	total = 0
-	#rouge = R()
+
 	fh = open(filename, "r")
 	line = fh.readline()
 	line_limit = 100
@@ -233,9 +249,12 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 		total_lines = line_limit
 	#while(line):
 	
-	empty_answers = 0
-	low_rouge_l = 0
-	multi_para_answer_count = 0
+	total = empty_answers = multi_para_answer_count = 0
+	low_rouge_l = np.zeros(3,dtype=np.int32)
+
+	# individual para span generation
+	para_with_answer_count = np.zeros(max_para_count,dtype=int32)
+
 	for i in tqdm(range(total_lines)):
 		source = json.loads(line)
 		answer_texts = []
@@ -244,8 +263,8 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 		extracted_answer_text = ''
 		passage_concat = ''
 		passage_pr_tokens = ['--NULL--']*max_para_count
-		passage_rank = [0]*max_para_count
-
+		passage_rank = np.zeros(max_para_count,dtype=int32)
+		individual_rank = np.zeros(max_para_count,dtype=int32)
 		#for pi, p in enumerate(article["paragraphs"]):
 		for j,passage in enumerate(source['passages']):
 			passage_text = passage['passage_text'].replace(
@@ -253,7 +272,6 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 			passage_concat += " " + passage_text
 			passage_pr_tokens[j] = word_tokenize(" " + passage_text)
 		passage_tokens = word_tokenize(passage_concat)
-
 		answer = source['answers']
 		if answer == [] or answer == ['']:
 			empty_answers +=1
@@ -269,7 +287,7 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 						"''", '" ').replace("``", '" ').lower()
 					passage_concat += " " + passage_text
 					passage_pr_tokens[j] = word_tokenize(" " + passage_text)
-
+					index_temp  = 
 				answer_text = i.strip().lower()
 				answer_text = answer_text[:-1] if answer_text[-1] == "." else answer_text
 				answer_token = word_tokenize(answer_text)
@@ -284,7 +302,8 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 					# ((start_index, end_index)(Fsummary, precision, recall)
 					# (si, ei) > not used from the line below
 					#_, fpr_scores = rouge_span([extracted_answer], [detoken_ref_answer])
-					fpr_scores = rouge_l(extracted_answer, detoken_ref_answer)
+					fpr_scores = rouge_l(normalize_answer(extracted_answer), \
+						normalize_answer(detoken_ref_answer))
 
 					#print("Recall:",fpr_scores[rouge_metric])
 				except Exception as e: # for yes/no type questions, index = []
@@ -292,12 +311,14 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 					#print(index)
 					pass
 				if fpr_scores[rouge_metric]>highest_rouge_l:
-					highest_rouge_l = fpr_scores[rouge_metric]
+					highest_rouge_l = fpr_scores
 					answer_texts = [detoken_ref_answer]
 					extracted_answer_text = extracted_answer
 					answer_start, answer_end = start_idx, end_idx
-			if highest_rouge_l<rouge_l_limit:
-				low_rouge_l += 1
+			for i in range(3):
+				if highest_rouge_l[i]<rouge_l_limit:
+					low_rouge_l[i] += 1
+			if highest_rouge_l[rouge_metric]<rouge_l_limit:
 				#print('\nLOW ROUGE - L\n')
 				line = fh.readline()
 				"""
