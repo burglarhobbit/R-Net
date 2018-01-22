@@ -263,8 +263,8 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 		extracted_answer_text = ''
 		passage_concat = ''
 		passage_pr_tokens = ['--NULL--']*max_para_count
-		passage_rank = np.zeros(max_para_count,dtype=int32)
-		individual_rank = np.zeros(max_para_count,dtype=int32)
+		passage_rank = np.zeros(max_para_count,dtype=np.int32)
+		individual_rank = np.zeros(max_para_count,dtype=np.int32)
 		#for pi, p in enumerate(article["paragraphs"]):
 		for j,passage in enumerate(source['passages']):
 			passage_text = passage['passage_text'].replace(
