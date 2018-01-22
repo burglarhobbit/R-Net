@@ -103,7 +103,7 @@ flags.DEFINE_boolean("is_bucket", True, "build bucket batch iterator or not")
 flags.DEFINE_boolean("line_limit_prepro", False, "limit prepro to limited number of lines for POC")
 flags.DEFINE_integer("bucket_range", [40, 401, 40], "the range of bucket")
 
-flags.DEFINE_integer("rouge_metric", 2, "# 0 = f, 1 = p, 2 = r")
+flags.DEFINE_integer("rouge_metric", 0, "# 0 = f, 1 = p, 2 = r")
 flags.DEFINE_integer("batch_size", 32, "Batch size") # 64
 flags.DEFINE_integer("num_steps", 50000, "Number of steps")
 flags.DEFINE_integer("checkpoint", 1000,
