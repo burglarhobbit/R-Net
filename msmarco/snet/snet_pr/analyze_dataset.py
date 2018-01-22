@@ -307,7 +307,7 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 					#_, fpr_scores = rouge_span([extracted_answer], [detoken_ref_answer])
 					fpr_scores = rouge_l(normalize_answer(extracted_answer), \
 						normalize_answer(detoken_ref_answer))
-					print(fpr_scores)
+					#print(fpr_scores)
 
 					#print("Recall:",fpr_scores[rouge_metric])
 				except Exception as e: # for yes/no type questions, index = []
