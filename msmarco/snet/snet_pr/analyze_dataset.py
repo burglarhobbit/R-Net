@@ -534,7 +534,7 @@ def build_features(config, examples, data_type, out_file, word2idx_dict, char2id
 
 		total += 1
 		passage_idxs = np.zeros([para_limit], dtype=np.int32)
-		passage_rank = np.array(example["passage_rank"], dtype=np.int32)
+		passage_rank = np.array(example["passage_rank"], dtype=np.float32)
 		passage_char_idxs = np.zeros([para_limit, char_limit], dtype=np.int32)
 
 		# for passage ranking
