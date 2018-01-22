@@ -311,7 +311,7 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 					#print(e)
 					#print(index)
 					pass
-				if fpr_scores[rouge_metric]>highest_rouge_l:
+				if fpr_scores[rouge_metric]>highest_rouge_l[rouge_metric]:
 					highest_rouge_l = fpr_scores
 					answer_texts = [detoken_ref_answer]
 					extracted_answer_text = extracted_answer
