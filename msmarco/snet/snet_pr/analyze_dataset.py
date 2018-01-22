@@ -223,6 +223,7 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 	detokenizer = MosesDetokenizer()
 	print("Generating {} examples...".format(data_type))
 	examples = []
+
 	rouge_metric = rouge_metric # 0 = f, 1 = p, 2 = r, default = r
 	rouge_l_limit = 0.7
 	remove_tokens = ["'",'"','.',',','']
@@ -259,7 +260,7 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 		source = json.loads(line)
 		answer_texts = []
 		answer_start = answer_end = 0
-		highest_rouge_l = 0
+		highest_rouge_l = np.zeros(3)
 		extracted_answer_text = ''
 		passage_concat = ''
 		passage_pr_tokens = ['--NULL--']*max_para_count
