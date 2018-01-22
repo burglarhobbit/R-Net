@@ -202,11 +202,11 @@ def rouge_l(evaluated_ngrams, reference_ngrams):
 	# return overlapping_count / reference_count
 	return f1_score, precision, recall
 
-def process_file(max_para_count, filename, data_type, word_counter, char_counter, is_line_limit):
+def process_file(max_para_count, filename, data_type, word_counter, char_counter, is_line_limit, rouge_metric):
 	detokenizer = MosesDetokenizer()
 	print("Generating {} examples...".format(data_type))
 	examples = []
-	rouge_metric = 2 # 0 = f, 1 = p, 2 = r
+	rouge_metric = rouge_metric # 0 = f, 1 = p, 2 = r, default = r
 	rouge_l_limit = 0.7
 	remove_tokens = ["'",'"','.',',','']
 	eval_examples = {}
@@ -263,6 +263,13 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 			for i in answer:
 				if i.strip() == "":
 					continue
+
+				for j,passage in enumerate(source['passages']):
+					passage_text = passage['passage_text'].replace(
+						"''", '" ').replace("``", '" ').lower()
+					passage_concat += " " + passage_text
+					passage_pr_tokens[j] = word_tokenize(" " + passage_text)
+
 				answer_text = i.strip().lower()
 				answer_text = answer_text[:-1] if answer_text[-1] == "." else answer_text
 				answer_token = word_tokenize(answer_text)
@@ -584,11 +591,14 @@ def save(filename, obj, message=None):
 def prepro_(config):
 	word_counter, char_counter = Counter(), Counter()
 	train_examples, train_eval = process_file(
-		config.max_para, config.train_file, "train", word_counter, char_counter, config.line_limit_prepro)
+		config.max_para, config.train_file, "train", word_counter, char_counter, 
+		config.line_limit_prepro, config.rouge_metric)
 	dev_examples, dev_eval = process_file(
-		config.max_para, config.dev_file, "dev", word_counter, char_counter, config.line_limit_prepro)
+		config.max_para, config.dev_file, "dev", word_counter, char_counter, 
+		config.line_limit_prepro, config.rouge_metric)
 	test_examples, test_eval = process_file(
-		config.max_para, config.test_file, "test", word_counter, char_counter, config.line_limit_prepro)
+		config.max_para, config.test_file, "test", word_counter, char_counter,
+		config.line_limit_prepro, config.rouge_metric)
 	word_emb_mat, word2idx_dict = get_embedding(
 		word_counter, "word", emb_file=config.glove_file, size=config.glove_size, vec_size=config.glove_dim)
 	char_emb_mat, char2idx_dict = get_embedding(
