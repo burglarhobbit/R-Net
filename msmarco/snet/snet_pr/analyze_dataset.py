@@ -283,12 +283,12 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 				if i.strip() == "":
 					continue
 
-				for j,passage in enumerate(source['passages']):
-					passage_text = passage['passage_text'].replace(
-						"''", '" ').replace("``", '" ').lower()
-					passage_concat += " " + passage_text
-					passage_pr_tokens[j] = word_tokenize(" " + passage_text)
-					#index_temp  = 
+				#for j,passage in enumerate(source['passages']):
+				#	passage_text = passage['passage_text'].replace(
+				#		"''", '" ').replace("``", '" ').lower()
+				#	passage_concat += " " + passage_text
+				#	passage_pr_tokens[j] = word_tokenize(" " + passage_text)
+				#	#index_temp  = 
 				answer_text = i.strip().lower()
 				answer_text = answer_text[:-1] if answer_text[-1] == "." else answer_text
 				answer_token = word_tokenize(answer_text)
