@@ -309,7 +309,7 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 
 					#print("Recall:",fpr_scores[rouge_metric])
 				except Exception as e: # for yes/no type questions, index = []
-					#print(e)
+					print(e)
 					#print(index)
 					pass
 				if fpr_scores[rouge_metric]>highest_rouge_l[rouge_metric]:
