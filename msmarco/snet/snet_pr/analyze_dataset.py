@@ -414,7 +414,7 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 			"passage_concat": passage_concat, "spans": spans, "answers": answer_texts, "uuid": source["query_id"],
 			"passage_rank": passage_rank}
 		line = fh.readline()
-		if i%1000 == 0:
+		if total%1000 == 0:
 			print("{} questions in total".format(len(examples)))
 			print("{} questions with empty answer".format(empty_answers))
 			print("{} questions with low rouge-l answers".format(low_rouge_l))
