@@ -7,8 +7,7 @@ class Model(object):
 		self.config = config
 		self.global_step = tf.get_variable('global_step', shape=[], dtype=tf.int32,
 										   initializer=tf.constant_initializer(0), trainable=False)
-		self.c, self.q, self.ch, self.qh, self.y1, self.y2, self.qa_id \
-		self.pr_c, self.pr_ch, self.pr = batch.get_next()
+		self.c, self.q, self.ch, self.qh, self.y1, self.y2, self.qa_id self.pr_c, self.pr_ch, self.pr = batch.get_next()
 		self.is_train = tf.get_variable(
 			"is_train", shape=[], dtype=tf.bool, trainable=False)
 		self.word_mat = tf.get_variable("word_mat", initializer=tf.constant(
