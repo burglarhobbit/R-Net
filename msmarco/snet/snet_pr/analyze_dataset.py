@@ -257,6 +257,7 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 
 	# individual para span generation
 	para_with_answer_count = np.zeros(max_para_count,dtype=np.int32)
+	low_rouge_l_temp = np.zeros(3,dtype=np.int32)
 
 	for i in tqdm(range(total_lines)):
 		source = json.loads(line)
@@ -267,6 +268,8 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 		passage_concat = ''
 		passage_pr_tokens = ['--NULL--']*max_para_count
 		passage_rank = [0]*max_para_count
+
+		highest_rouge_l_temp = np.zeros(3)
 		individual_rank = np.zeros(max_para_count,dtype=np.int32)
 		#for pi, p in enumerate(article["paragraphs"]):
 		for j,passage in enumerate(source['passages']):
@@ -277,25 +280,41 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 		passage_tokens = word_tokenize(passage_concat)
 		answer = source['answers']
 		if answer == [] or answer == ['']:
-			empty_answers +=1
+			empty_answers += 1
 			line = fh.readline()
 			continue
 		elif len(answer)>=1:
-			for answer_i,i in enumerate(answer):
-				if i.strip() == "":
+			for answer_k,k in enumerate(answer):
+				if k.strip() == "":
 					continue
 
-				#for j,passage in enumerate(source['passages']):
-				#	passage_text = passage['passage_text'].replace(
-				#		"''", '" ').replace("``", '" ').lower()
-				#	passage_concat += " " + passage_text
-				#	passage_pr_tokens[j] = word_tokenize(" " + passage_text)
-				#	#index_temp  = 
-				answer_text = i.strip().lower()
+				answer_text = k.strip().lower()
 				answer_text = answer_text[:-1] if answer_text[-1] == "." else answer_text
 				answer_token = word_tokenize(answer_text)
 				index = lcs_tokens(passage_tokens, answer_token)
 				#print(index)
+				#######################
+				# individual para scoring:
+				fpr_scores_temp = (0,0,0)
+				for p in passage_pr_tokens:
+					index_temp = lcs_tokens(p, answer_token)
+					try:
+						start_idx_temp, end_idx_temp = index_temp[0], index_temp[-1]+1
+						extracted_answer_temp = detokenizer.detokenize(passage_pr_tokens[start_idx_temp:end_idx_temp], return_str=True)
+						detoken_ref_answer_temp = detokenizer.detokenize(answer_token, return_str=True)
+						fpr_scores_temp = rouge_l(normalize_answer(extracted_answer_temp), \
+							normalize_answer(detoken_ref_answer_temp))
+					except Exception as e: 
+						pass
+					if fpr_scores_temp[rouge_metric]>highest_rouge_l_temp[rouge_metric]:
+						highest_rouge_l_temp = fpr_scores_temp
+						answer_texts_temp = [detoken_ref_answer_temp]
+						extracted_answer_text_temp = extracted_answer_temp
+						answer_start_temp, answer_end_temp = start_idx_temp, end_idx_temp
+				for k in range(3):
+					if highest_rouge_l_temp[k]<rouge_l_limit:
+						low_rouge_l_temp[k] += 1
+				##########################################
 				fpr_scores = (0,0,0)
 				try:
 					start_idx, end_idx = index[0], index[-1]+1
@@ -310,6 +329,10 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 					#print(fpr_scores)
 
 					#print("Recall:",fpr_scores[rouge_metric])
+					#############################################
+					# individual para scoring:
+					#############################################
+
 				except Exception as e: # for yes/no type questions, index = []
 					#print(e)
 					#print(index)
@@ -319,9 +342,9 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 					answer_texts = [detoken_ref_answer]
 					extracted_answer_text = extracted_answer
 					answer_start, answer_end = start_idx, end_idx
-			for i in range(3):
-				if highest_rouge_l[i]<rouge_l_limit:
-					low_rouge_l[i] += 1
+			for k in range(3):
+				if highest_rouge_l[k]<rouge_l_limit:
+					low_rouge_l[k] += 1
 			if highest_rouge_l[rouge_metric]<rouge_l_limit:
 				#print('\nLOW ROUGE - L\n')
 				line = fh.readline()
@@ -418,11 +441,13 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 			print("{} questions in total".format(len(examples)))
 			print("{} questions with empty answer".format(empty_answers))
 			print("{} questions with low rouge-l answers".format(low_rouge_l))
+			print("{} questions with low rouge-l answers with multipara".format(low_rouge_l_temp))
 			print("{} questions with multipara answers out of total valid examples".format(multi_para_answer_count))
 	random.shuffle(examples)
 	print("{} questions in total".format(len(examples)))
 	print("{} questions with empty answer".format(empty_answers))
 	print("{} questions with low rouge-l answers".format(low_rouge_l))
+	print("{} questions with low rouge-l answers with multipara".format(low_rouge_l_temp))
 	print("{} questions with multipara answers out of total valid examples".format(multi_para_answer_count))
 
 	"""
