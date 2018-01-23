@@ -333,6 +333,7 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 					answer_texts = [detoken_ref_answer]
 					extracted_answer_text = extracted_answer
 					answer_start, answer_end = start_idx, end_idx
+				# end of answer for loop
 			for k in range(3):
 				if highest_rouge_l[k]<rouge_l_limit:
 					low_rouge_l[k] += 1
