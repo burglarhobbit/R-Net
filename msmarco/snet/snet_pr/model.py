@@ -64,6 +64,7 @@ class Model(object):
 		gru = cudnn_gru if config.use_cudnn else native_gru
 
 		gi = []
+		att_vP = []
 		for i in range(config.max_para):
 			with tf.variable_scope("emb"):
 				with tf.variable_scope("char"):
@@ -107,6 +108,7 @@ class Model(object):
 				).as_list()[-1], keep_prob=config.keep_prob, is_train=self.is_train)
 				att = rnn(qc_att, seq_len=self.c_len)
 				# att is the v_P
+				att_vP.append(att)
 
 			"""
 			with tf.variable_scope("match"):

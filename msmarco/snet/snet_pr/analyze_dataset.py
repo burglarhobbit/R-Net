@@ -259,6 +259,9 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 	para_with_answer_count = np.zeros(max_para_count,dtype=np.int32)
 	low_rouge_l_temp = np.zeros(3,dtype=np.int32)
 
+	# para exceeding length
+	para_length_exceeded = 0
+	max_para_length = 0
 	for i in tqdm(range(total_lines)):
 		source = json.loads(line)
 		answer_texts = []
@@ -277,6 +280,11 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 				"''", '" ').replace("``", '" ').lower()
 			passage_concat += " " + passage_text
 			passage_pr_tokens[j] = word_tokenize(" " + passage_text)
+			length = len(passage_pr_tokens[j])
+			if length>400:
+				para_length_exceeded += 1
+			if length>max_para_length:
+				max_para_length = length
 		passage_tokens = word_tokenize(passage_concat)
 		answer = source['answers']
 		if answer == [] or answer == ['']:
@@ -441,12 +449,17 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 			print("{} questions with low rouge-l answers".format(low_rouge_l))
 			print("{} questions with low rouge-l answers with multipara".format(low_rouge_l_temp))
 			print("{} questions with multipara answers out of total valid examples".format(multi_para_answer_count))
+			print("{} para exceeding paralength".format(para_length_exceeded))
+			print("{} max paralength".format(max_para_length))
 	random.shuffle(examples)
 	print("{} questions in total".format(len(examples)))
 	print("{} questions with empty answer".format(empty_answers))
 	print("{} questions with low rouge-l answers".format(low_rouge_l))
 	print("{} questions with low rouge-l answers with multipara".format(low_rouge_l_temp))
 	print("{} questions with multipara answers out of total valid examples".format(multi_para_answer_count))
+	print("{} para exceeding paralength".format(para_length_exceeded))
+	print("{} max paralength".format(max_para_length))
+
 
 	"""
 	# original implementation for comparision purposes
