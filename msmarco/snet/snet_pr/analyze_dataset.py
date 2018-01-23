@@ -311,9 +311,6 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 						answer_texts_temp = [detoken_ref_answer_temp]
 						extracted_answer_text_temp = extracted_answer_temp
 						answer_start_temp, answer_end_temp = start_idx_temp, end_idx_temp
-				for k in range(3):
-					if highest_rouge_l_temp[k]<rouge_l_limit:
-						low_rouge_l_temp[k] += 1
 				#####################################################################
 				fpr_scores = (0,0,0)
 				try:
