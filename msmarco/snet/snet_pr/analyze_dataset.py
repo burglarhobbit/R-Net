@@ -293,14 +293,14 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 				answer_token = word_tokenize(answer_text)
 				index = lcs_tokens(passage_tokens, answer_token)
 				#print(index)
-				#######################
+				#####################################################################
 				# individual para scoring:
 				fpr_scores_temp = (0,0,0)
-				for p in passage_pr_tokens:
-					index_temp = lcs_tokens(p, answer_token)
+				for l, passage in enumerate(passage_pr_tokens):
+					index_temp = lcs_tokens(passage, answer_token)
 					try:
 						start_idx_temp, end_idx_temp = index_temp[0], index_temp[-1]+1
-						extracted_answer_temp = detokenizer.detokenize(passage_pr_tokens[start_idx_temp:end_idx_temp], return_str=True)
+						extracted_answer_temp = detokenizer.detokenize(passage[start_idx_temp:end_idx_temp], return_str=True)
 						detoken_ref_answer_temp = detokenizer.detokenize(answer_token, return_str=True)
 						fpr_scores_temp = rouge_l(normalize_answer(extracted_answer_temp), \
 							normalize_answer(detoken_ref_answer_temp))
@@ -314,7 +314,7 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 				for k in range(3):
 					if highest_rouge_l_temp[k]<rouge_l_limit:
 						low_rouge_l_temp[k] += 1
-				##########################################
+				#####################################################################
 				fpr_scores = (0,0,0)
 				try:
 					start_idx, end_idx = index[0], index[-1]+1
@@ -326,12 +326,6 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 					#_, fpr_scores = rouge_span([extracted_answer], [detoken_ref_answer])
 					fpr_scores = rouge_l(normalize_answer(extracted_answer), \
 						normalize_answer(detoken_ref_answer))
-					#print(fpr_scores)
-
-					#print("Recall:",fpr_scores[rouge_metric])
-					#############################################
-					# individual para scoring:
-					#############################################
 
 				except Exception as e: # for yes/no type questions, index = []
 					#print(e)
@@ -345,6 +339,12 @@ def process_file(max_para_count, filename, data_type, word_counter, char_counter
 			for k in range(3):
 				if highest_rouge_l[k]<rouge_l_limit:
 					low_rouge_l[k] += 1
+			################################################################
+			# individual para scoring:
+			for k in range(3):
+				if highest_rouge_l_temp[k]<rouge_l_limit:
+					low_rouge_l_temp[k] += 1
+			################################################################
 			if highest_rouge_l[rouge_metric]<rouge_l_limit:
 				#print('\nLOW ROUGE - L\n')
 				line = fh.readline()
